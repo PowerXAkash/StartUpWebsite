@@ -1,3 +1,11 @@
 fastapi
 uvicorn[standard]
 sqlalchemy
+langgraph
+langchain
+langchain-openai
+langchain-core
+openai
+python-dotenv
+requests
+requests-html

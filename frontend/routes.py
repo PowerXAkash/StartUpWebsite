@@ -395,9 +395,101 @@ async def frontend_index():
             background: linear-gradient(90deg, rgba(31,78,216,0.08), rgba(37,99,235,0.03));
             border: 1px solid rgba(31,78,216,0.12);
           }
+          .chat-launcher {
+            position: fixed;
+            right: 28px;
+            bottom: 28px;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #1f4ed8, #2563eb);
+            color: #fff;
+            border: none;
+            box-shadow: 0 22px 40px rgba(31,78,216,0.2);
+            cursor: pointer;
+            z-index: 20;
+          }
+          .chat-launcher:hover { transform: translateY(-2px); }
+          .chat-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 104px;
+            width: 360px;
+            max-width: calc(100% - 32px);
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 30px 80px rgba(20, 33, 61, 0.16);
+            overflow: hidden;
+            display: none;
+            z-index: 20;
+          }
+          .chat-panel.active { display: block; }
+          .chat-header {
+            padding: 16px 20px;
+            background: linear-gradient(90deg, #1f4ed8, #2563eb);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .chat-header h4 { margin: 0; font-size: 1rem; }
+          .chat-close {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            font-weight: 700;
+          }
+          .chat-messages {
+            max-height: 340px;
+            overflow-y: auto;
+            padding: 18px 20px;
+            background: #f7fbff;
+          }
+          .chat-message { margin-bottom: 14px; display: flex; }
+          .chat-message.user { justify-content: flex-end; }
+          .chat-message.bot { justify-content: flex-start; }
+          .bubble {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 100%;
+            line-height: 1.5;
+            font-size: 0.95rem;
+          }
+          .chat-message.user .bubble { background: rgba(37,99,235,0.14); color: #102a43; }
+          .chat-message.bot .bubble { background: #eef5ff; color: #14213d; }
+          .chat-input {
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid #e2e8f0;
+            padding: 14px 16px;
+            background: #ffffff;
+          }
+          .chat-input input {
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+          }
+          .chat-input button {
+            border: none;
+            border-radius: 16px;
+            padding: 12px 16px;
+            background: #1f4ed8;
+            color: #fff;
+            cursor: pointer;
+          }
           @media (max-width: 860px) {
             .hero, .feature-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+            .chat-panel { right: 16px; left: 16px; bottom: 90px; width: auto; }
           }
         </style>
       </head>
@@ -515,6 +607,82 @@ async def frontend_index():
             <a class="btn btn-primary" href="mailto:hello@seedstudio.example">Contact us</a>
           </section>
         </main>
+        <button class="chat-launcher" id="chatLauncher" aria-label="Open AI chat">🤖</button>
+        <div class="chat-panel" id="chatPanel">
+          <div class="chat-header">
+            <h4>SeedStudio AI Assistant</h4>
+            <div class="chat-close" id="chatClose">×</div>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-message bot"><div class="bubble">Hello! Ask me about our AI services, products, or how SeedStudio can help your business.</div></div>
+          </div>
+          <div class="chat-input">
+            <input id="chatInput" type="text" placeholder="Type a message..." />
+            <button id="chatSend" type="button">Send</button>
+          </div>
+        </div>
+        <script>
+          const chatLauncher = document.getElementById('chatLauncher');
+          const chatPanel = document.getElementById('chatPanel');
+          const chatClose = document.getElementById('chatClose');
+          const chatMessages = document.getElementById('chatMessages');
+          const chatInput = document.getElementById('chatInput');
+          const chatSend = document.getElementById('chatSend');
+
+          function addMessage(role, text) {
+            const message = document.createElement('div');
+            message.className = 'chat-message ' + role;
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = text;
+            message.appendChild(bubble);
+            chatMessages.appendChild(message);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+
+          function respondToMessage(text) {
+            const normalized = text.toLowerCase();
+            if (/hello|hi|hey/.test(normalized)) {
+              return 'Hi there! I’m the SeedStudio assistant. Ask me about our AI solutions for education, industry, or agriculture.';
+            }
+            if (/education|student|teacher|parent/.test(normalized)) {
+              return 'Our Education AI includes tutoring, teacher dashboards, and parent portals. Which area would you like to explore?';
+            }
+            if (/healthcare|medical|hospital/.test(normalized)) {
+              return 'Our Healthcare AI supports diagnostics, workflow automation, and patient engagement for smarter care.';
+            }
+            if (/farm|crop|agriculture|weather/.test(normalized)) {
+              return 'Our Agriculture AI offers crop monitoring, precision farming, and weather intelligence to improve yields.';
+            }
+            if (/automation|industry|mechanical/.test(normalized)) {
+              return 'We provide Industry AI for equipment maintenance, production automation, and operational analytics.';
+            }
+            return 'Great question! We can help you build AI solutions for your business. Tell me more about your goals or ask for a specific service.';
+          }
+
+          chatLauncher.addEventListener('click', () => {
+            chatPanel.classList.toggle('active');
+          });
+
+          chatClose.addEventListener('click', () => {
+            chatPanel.classList.remove('active');
+          });
+
+          chatSend.addEventListener('click', () => {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addMessage('user', text);
+            chatInput.value = '';
+            setTimeout(() => addMessage('bot', respondToMessage(text)), 500);
+          });
+
+          chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              chatSend.click();
+            }
+          });
+        </script>
       </body>
     </html>
     """
