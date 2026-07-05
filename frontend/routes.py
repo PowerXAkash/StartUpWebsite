@@ -14,683 +14,283 @@ def render_service_page(
     cta_text: str = "Request a demo",
 ) -> str:
     feature_items = "".join(
-        f"""<div class="feature-card" data-aos="fade-up">
-            <div class="feature-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                </svg>
-            </div>
+        f"""<div class="reveal feature-card">
+            <div class="feature-glow"></div>
+            <div class="feature-icon">{chr(0x2699)}</div>
             <h3>{item}</h3>
             <p>{desc}</p>
         </div>"""
         for item, desc in features
     )
-    how_it_works_items = "".join(
-        f"""<div class="step-card" data-aos="fade-up" data-aos-delay="{i*100}">
-            <div class="step-number">0{i+1}</div>
-            <div class="step-line"></div>
+    hiw_items = "".join(
+        f"""<div class="reveal step-item" style="transition-delay:{i*0.15}s">
+            <div class="step-ring">
+                <span>{i+1}</span>
+            </div>
             <h4>{title}</h4>
             <p>{desc}</p>
         </div>"""
         for i, (title, desc) in enumerate(how_it_works)
     )
     benefit_items = "".join(
-        f"""<li data-aos="fade-up" data-aos-delay="{i*50}">
-            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+        f"""<li class="reveal" style="transition-delay:{i*0.08}s">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             {b}
         </li>"""
         for i, b in enumerate(benefits)
     )
 
-    return f"""<!DOCTYPE html>
+    html = """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} | SeedStudio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-        :root {{
-            --primary: #6C63FF;
-            --primary-dark: #5A52D5;
-            --primary-light: #8B85FF;
-            --secondary: #FF6584;
-            --accent: #00D2FF;
-            --bg-dark: #0a0a1a;
-            --bg-card: rgba(255,255,255,0.05);
-            --bg-card-hover: rgba(255,255,255,0.08);
-            --text: #ffffff;
-            --text-muted: rgba(255,255,255,0.6);
-            --border: rgba(255,255,255,0.1);
-            --glass: rgba(255,255,255,0.03);
-            --shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }}
-        html {{ scroll-behavior: smooth; }}
-        body {{
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }}
-        /* Animated background */
-        .bg-animation {{
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }}
-        .bg-animation .orb {{
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.3;
-            animation: orbFloat 20s ease-in-out infinite;
-        }}
-        .bg-animation .orb:nth-child(1) {{
-            width: 600px; height: 600px;
-            background: var(--primary);
-            top: -200px; left: -200px;
-            animation-delay: 0s;
-        }}
-        .bg-animation .orb:nth-child(2) {{
-            width: 500px; height: 500px;
-            background: var(--secondary);
-            bottom: -150px; right: -150px;
-            animation-delay: -7s;
-        }}
-        .bg-animation .orb:nth-child(3) {{
-            width: 400px; height: 400px;
-            background: var(--accent);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -14s;
-        }}
-        @keyframes orbFloat {{
-            0%, 100% {{ transform: translate(0, 0) scale(1); }}
-            25% {{ transform: translate(100px, -50px) scale(1.1); }}
-            50% {{ transform: translate(-50px, 100px) scale(0.9); }}
-            75% {{ transform: translate(80px, 50px) scale(1.05); }}
-        }}
-        /* Grid overlay */
-        .grid-overlay {{
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: -1;
-            pointer-events: none;
-        }}
-        a {{ color: inherit; text-decoration: none; }}
-        .container {{ width: min(1200px, calc(100% - 40px)); margin: 0 auto; }}
-
-        /* Header */
-        header {{
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            padding: 16px 0;
-            transition: all 0.3s ease;
-        }}
-        header.scrolled {{
-            background: rgba(10,10,26,0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 0;
-        }}
-        .nav {{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }}
-        .brand {{
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }}
-        .brand span {{ color: var(--text); -webkit-text-fill-color: var(--text); }}
-        .nav-links {{ display: flex; gap: 32px; align-items: center; }}
-        .nav-links a {{
-            color: var(--text-muted);
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-            position: relative;
-        }}
-        .nav-links a::after {{
-            content: '';
-            position: absolute;
-            bottom: -4px; left: 0;
-            width: 0; height: 2px;
-            background: var(--primary);
-            transition: width 0.3s ease;
-        }}
-        .nav-links a:hover {{ color: var(--text); }}
-        .nav-links a:hover::after {{ width: 100%; }}
-        .nav-cta {{
-            padding: 10px 24px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50px;
-            color: white !important;
-            font-weight: 600 !important;
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        }}
-        .nav-cta::after {{ display: none !important; }}
-        .nav-cta:hover {{
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(108,99,255,0.3);
-        }}
-        .mobile-toggle {{
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 5px;
-        }}
-        .mobile-toggle span {{
-            width: 24px; height: 2px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }}
-
-        /* Hero Section */
-        .hero {{
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 120px 0 60px;
-            position: relative;
-        }}
-        .hero-content {{
-            max-width: 800px;
-        }}
-        .hero-badge {{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(108,99,255,0.1);
-            border: 1px solid rgba(108,99,255,0.2);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            color: var(--primary-light);
-            margin-bottom: 24px;
-            animation: fadeInUp 0.6s ease;
-        }}
-        .hero-badge .dot {{
-            width: 8px; height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }}
-        @keyframes pulse {{
-            0%, 100% {{ opacity: 1; transform: scale(1); }}
-            50% {{ opacity: 0.5; transform: scale(0.8); }}
-        }}
-        .hero h1 {{
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-            animation: fadeInUp 0.6s ease 0.1s both;
-        }}
-        .hero h1 .gradient-text {{
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }}
-        .hero p {{
-            font-size: 1.15rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin-bottom: 32px;
-            animation: fadeInUp 0.6s ease 0.2s both;
-        }}
-        .hero-actions {{
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.6s ease 0.3s both;
-        }}
-        .btn {{
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-        }}
-        .btn-primary {{
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 10px 30px rgba(108,99,255,0.25);
-        }}
-        .btn-primary:hover {{
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(108,99,255,0.35);
-        }}
-        .btn-secondary {{
-            background: var(--glass);
-            color: var(--text);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }}
-        .btn-secondary:hover {{
-            background: var(--bg-card);
-            transform: translateY(-3px);
-        }}
-        .btn .arrow {{
-            transition: transform 0.3s ease;
-        }}
-        .btn:hover .arrow {{
-            transform: translateX(4px);
-        }}
-
-        /* Sections */
-        section {{ padding: 100px 0; }}
-        .section-header {{
-            text-align: center;
-            margin-bottom: 60px;
-        }}
-        .section-label {{
-            display: inline-block;
-            padding: 6px 14px;
-            background: rgba(108,99,255,0.1);
-            border: 1px solid rgba(108,99,255,0.2);
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--primary-light);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-        }}
-        .section-title {{
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 16px;
-        }}
-        .section-subtitle {{
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }}
-
-        /* Feature Cards */
-        .features-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }}
-        .feature-card {{
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }}
-        .feature-card::before {{
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }}
-        .feature-card:hover {{
-            background: var(--bg-card-hover);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border-color: rgba(108,99,255,0.3);
-        }}
-        .feature-card:hover::before {{
-            transform: scaleX(1);
-        }}
-        .feature-icon {{
-            width: 48px; height: 48px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,210,255,0.1));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            color: var(--primary-light);
-        }}
-        .feature-icon svg {{
-            width: 24px; height: 24px;
-        }}
-        .feature-card h3 {{
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }}
-        .feature-card p {{
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }}
-
-        /* Steps */
-        .steps-grid {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-            position: relative;
-        }}
-        .step-card {{
-            text-align: center;
-            padding: 40px 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            transition: all 0.4s ease;
-            position: relative;
-        }}
-        .step-card:hover {{
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border-color: rgba(108,99,255,0.3);
-        }}
-        .step-number {{
-            font-size: 3rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 16px;
-            line-height: 1;
-        }}
-        .step-card h4 {{
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }}
-        .step-card p {{
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }}
-
-        /* Benefits */
-        .benefits-container {{
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 48px;
-            max-width: 800px;
-            margin: 0 auto;
-        }}
-        .benefits-container ul {{
-            list-style: none;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }}
-        .benefits-container li {{
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 20px;
-            background: rgba(108,99,255,0.05);
-            border: 1px solid rgba(108,99,255,0.1);
-            border-radius: 12px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }}
-        .benefits-container li:hover {{
-            background: rgba(108,99,255,0.1);
-            border-color: rgba(108,99,255,0.2);
-            transform: translateX(4px);
-        }}
-        .check-icon {{
-            width: 20px; height: 20px;
-            color: var(--primary);
-            flex-shrink: 0;
-        }}
-
-        /* CTA */
-        .cta-section {{
-            text-align: center;
-            padding: 80px 40px;
-            background: linear-gradient(135deg, rgba(108,99,255,0.08), rgba(0,210,255,0.05));
-            border: 1px solid rgba(108,99,255,0.15);
-            border-radius: 32px;
-            position: relative;
-            overflow: hidden;
-        }}
-        .cta-section::before {{
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at center, rgba(108,99,255,0.05) 0%, transparent 50%);
-            animation: ctaGlow 8s ease-in-out infinite;
-        }}
-        @keyframes ctaGlow {{
-            0%, 100% {{ transform: translate(0, 0); }}
-            50% {{ transform: translate(5%, 5%); }}
-        }}
-        .cta-section h2 {{
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            position: relative;
-        }}
-        .cta-section p {{
-            color: var(--text-muted);
-            margin-bottom: 28px;
-            position: relative;
-        }}
-        .cta-section .btn {{
-            position: relative;
-        }}
-
-        /* Animations */
-        @keyframes fadeInUp {{
-            from {{ opacity: 0; transform: translateY(30px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
-        [data-aos] {{
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }}
-        [data-aos].aos-animate {{
-            opacity: 1;
-            transform: translateY(0);
-        }}
-
-        /* Responsive */
-        @media (max-width: 860px) {{
-            .nav-links {{
-                display: none;
-                position: fixed;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(10,10,26,0.98);
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                gap: 24px;
-                z-index: 999;
-            }}
-            .nav-links.active {{ display: flex; }}
-            .mobile-toggle {{ display: flex; z-index: 1000; }}
-            .mobile-toggle.active span:nth-child(1) {{ transform: rotate(45deg) translate(5px, 5px); }}
-            .mobile-toggle.active span:nth-child(2) {{ opacity: 0; }}
-            .mobile-toggle.active span:nth-child(3) {{ transform: rotate(-45deg) translate(5px, -5px); }}
-            .steps-grid {{ grid-template-columns: 1fr; }}
-            .benefits-container ul {{ grid-template-columns: 1fr; }}
-            .features-grid {{ grid-template-columns: 1fr; }}
-            .hero h1 {{ font-size: 2rem; }}
-        }}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>""" + title + """ | SeedStudio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --p:#6C5CE7; --s:#00D2FF; --g:#00E676; --w:#ffffff; --b:#0a0a1a; --t:rgba(255,255,255,0.7); }
+html { scroll-behavior:smooth; }
+body { font-family:'Space Grotesk',sans-serif; background:var(--b); color:var(--w); overflow-x:hidden; }
+canvas#bg { position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:0; pointer-events:none; }
+.page { position:relative; z-index:1; }
+.section { min-height:100vh; display:flex; align-items:center; position:relative; padding:80px 0; }
+.section-inner { width:min(1200px,calc(100%-48px)); margin:0 auto; position:relative; z-index:2; }
+header { position:fixed; top:0; left:0; right:0; z-index:100; padding:16px 0; transition:.4s; }
+header.scrolled { background:rgba(10,10,26,0.9); backdrop-filter:blur(20px); border-bottom:1px solid rgba(108,92,231,0.15); }
+.nav { display:flex; align-items:center; justify-content:space-between; width:min(1200px,calc(100%-48px)); margin:0 auto; }
+.brand { font-size:1.4rem; font-weight:800; background:linear-gradient(135deg,var(--p),var(--s)); -webkit-background-clip:text;-webkit-text-fill-color:transparent; background-clip:text; }
+.brand span { color:var(--w); -webkit-text-fill-color:var(--w); }
+.nav-links { display:flex; gap:28px; align-items:center; }
+.nav-links a { color:var(--t); font-weight:500; font-size:.9rem; transition:.3s; position:relative; text-decoration:none; }
+.nav-links a:hover { color:var(--w); }
+.btn-glow { padding:10px 24px; background:linear-gradient(135deg,var(--p),var(--s)); border-radius:50px; color:#fff!important; font-weight:600!important; box-shadow:0 0 30px rgba(108,92,231,0.3); transition:.3s!important; }
+.btn-glow:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(108,92,231,0.5)!important; }
+.m-toggle { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:5px; }
+.m-toggle span { width:24px; height:2px; background:var(--w); border-radius:2px; transition:.3s; }
+.hero-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:center; min-height:100vh; padding:120px 0 60px; }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border:1px solid rgba(108,92,231,.3); border-radius:50px; font-size:.8rem; color:var(--p); margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; }
+.hero-badge .d { width:6px; height:6px; background:var(--p); border-radius:50%; }
+.hero h1 { font-size:clamp(2.2rem,4.5vw,3.8rem); font-weight:800; line-height:1.1; margin-bottom:16px; letter-spacing:-1px; }
+.hero h1 .g { background:linear-gradient(135deg,var(--p),var(--s)); -webkit-background-clip:text;-webkit-text-fill-color:transparent; background-clip:text; }
+.hero p { font-size:1.05rem; color:var(--t); max-width:520px; margin-bottom:28px; line-height:1.8; }
+.hero-actions { display:flex; gap:14px; flex-wrap:wrap; }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:50px; font-weight:600; font-size:.95rem; transition:.3s; cursor:pointer; border:none; text-decoration:none; }
+.btn-p { background:linear-gradient(135deg,var(--p),#5A52D5); color:#fff; box-shadow:0 10px 40px rgba(108,92,231,0.3); }
+.btn-p:hover { transform:translateY(-3px); box-shadow:0 15px 50px rgba(108,92,231,0.45); }
+.btn-s { background:rgba(255,255,255,.05); color:var(--w); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); }
+.btn-s:hover { background:rgba(255,255,255,.1); transform:translateY(-3px); }
+.hero-card { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:24px; padding:32px; backdrop-filter:blur(10px); }
+.hero-card h3 { font-size:1.15rem; font-weight:700; margin-bottom:6px; }
+.hero-card>p { font-size:.85rem; color:var(--t); margin-bottom:20px; }
+.mg { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.m { padding:14px; background:rgba(108,92,231,.05); border:1px solid rgba(108,92,231,.1); border-radius:12px; transition:.3s; }
+.m:hover { background:rgba(108,92,231,.1); transform:translateY(-2px); }
+.m strong { display:block; font-size:.95rem; color:var(--p); margin-bottom:2px; }
+.m span { font-size:.8rem; color:var(--t); }
+.hero-visual { position:relative; }
+.hero-glow-box { width:100%; aspect-ratio:1; border-radius:30px; background:linear-gradient(135deg,rgba(108,92,231,.1),rgba(0,210,255,.05)); border:1px solid rgba(108,92,231,.15); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.hero-glow-box::before { content:''; position:absolute; width:200%; height:200%; background:conic-gradient(from 0deg,var(--p),var(--s),var(--p)); animation:spin 10s linear infinite; opacity:.15; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.hero-glow-box .inner { position:relative; z-index:1; text-align:center; }
+.hero-glow-box .inner .big-icon { font-size:6rem; }
+.hero-glow-box .inner p { font-size:.9rem; color:var(--t); margin-top:12px; }
+.sh-s { text-align:center; margin-bottom:50px; }
+.sh-l { display:inline-block; padding:6px 14px; border:1px solid rgba(108,92,231,.25); border-radius:50px; font-size:.75rem; font-weight:600; color:var(--p); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+.sh-t { font-size:clamp(1.8rem,3vw,2.6rem); font-weight:800; margin-bottom:10px; }
+.sh-p { color:var(--t); font-size:1rem; max-width:500px; margin:0 auto; }
+.fg { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+.feature-card { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:20px; padding:30px; transition:.5s; position:relative; overflow:hidden; cursor:default; }
+.feature-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(108,92,231,.08),transparent); opacity:0; transition:.5s; }
+.feature-card:hover::before { opacity:1; }
+.feature-card:hover { transform:translateY(-8px); border-color:rgba(108,92,231,.3); box-shadow:0 30px 80px rgba(0,0,0,.4); }
+.feature-glow { position:absolute; top:-50%; right:-50%; width:100%; height:100%; background:radial-gradient(circle,rgba(108,92,231,.08),transparent 70%); opacity:0; transition:.5s; }
+.feature-card:hover .feature-glow { opacity:1; }
+.feature-icon { font-size:2rem; margin-bottom:16px; }
+.feature-card h3 { font-size:1.15rem; font-weight:700; margin-bottom:8px; }
+.feature-card p { color:var(--t); font-size:.9rem; line-height:1.7; }
+.sg { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
+.step-item { text-align:center; padding:40px 20px; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:20px; transition:.5s; }
+.step-item:hover { transform:translateY(-8px); border-color:rgba(108,92,231,.3); }
+.step-ring { width:72px; height:72px; border-radius:50%; margin:0 auto 18px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(0,210,255,.1)); border:1px solid rgba(108,92,231,.2); font-size:1.5rem; font-weight:800; color:var(--p); }
+.step-item h4 { font-size:1.05rem; font-weight:700; margin-bottom:8px; }
+.step-item p { color:var(--t); font-size:.85rem; }
+.bc { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:24px; padding:48px; max-width:800px; margin:0 auto; }
+.bc ul { list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.bc li { display:flex; align-items:center; gap:12px; padding:14px 18px; background:rgba(108,92,231,.04); border:1px solid rgba(108,92,231,.1); border-radius:12px; font-size:.9rem; transition:.3s; }
+.bc li:hover { background:rgba(108,92,231,.08); transform:translateX(4px); }
+.bc li svg { width:18px; height:18px; color:var(--g); flex-shrink:0; }
+.cta-b { text-align:center; padding:80px 40px; background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(0,210,255,.04)); border:1px solid rgba(108,92,231,.15); border-radius:32px; position:relative; overflow:hidden; }
+.cta-b::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3Cpattern id='g' x='25' y='25' width='50' height='50' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='25' cy='25' r='1' fill='rgba(108,92,231,.1)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23g)'/%3E%3C/svg%3E"); opacity:.5; }
+.cta-b h2 { font-size:2rem; font-weight:800; margin-bottom:10px; position:relative; }
+.cta-b p { color:var(--t); margin-bottom:24px; position:relative; }
+.cta-b .btn { position:relative; }
+.reveal { opacity:0; transform:translateY(40px); transition:all .8s cubic-bezier(.22,1,.36,1); }
+.reveal.v { opacity:1; transform:translateY(0); }
+.bg-layer { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; transition:opacity 1.2s ease; }
+.bg-layer-1 { background:radial-gradient(ellipse at 20% 50%,#0a0a2e,#0a0a1a); opacity:1; }
+.bg-layer-2 { background:radial-gradient(ellipse at 80% 30%,#1a0a2e,#0a0a1a); opacity:0; }
+.bg-layer-3 { background:radial-gradient(ellipse at 50% 80%,#0a1a2e,#0a0a1a); opacity:0; }
+.bg-layer-4 { background:radial-gradient(ellipse at 30% 70%,#2e0a1a,#0a0a1a); opacity:0; }
+@media(max-width:860px) {
+    .hero-grid { grid-template-columns:1fr; gap:40px; padding:100px 0 40px; }
+    .fg,.sg,.bc ul { grid-template-columns:1fr; }
+    .nav-links { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(10,10,26,.98); flex-direction:column; justify-content:center; align-items:center; gap:24px; z-index:99; }
+    .nav-links.active { display:flex; }
+    .m-toggle { display:flex; z-index:100; }
+    .m-toggle.active span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+    .m-toggle.active span:nth-child(2) { opacity:0; }
+    .m-toggle.active span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+}
+</style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="orb"></div>
-        <div class="orb"></div>
-        <div class="orb"></div>
+<canvas id="bg"></canvas>
+<div class="bg-layer bg-layer-1" id="bg1"></div>
+<div class="bg-layer bg-layer-2" id="bg2"></div>
+<div class="bg-layer bg-layer-3" id="bg3"></div>
+<div class="bg-layer bg-layer-4" id="bg4"></div>
+<header id="h">
+    <div class="nav">
+        <a class="brand" href="/">Seed<span>Studio</span></a>
+        <nav class="nav-links" id="nl">
+            <a href="/">Home</a>
+            <a href="/education-ai/student-learning">Education</a>
+            <a href="/industry-ai/healthcare">Industry</a>
+            <a href="/agricultural-ai/crop-monitoring">Agriculture</a>
+            <a class="btn-glow" href="mailto:hello@seedstudio.example">Get Started</a>
+        </nav>
+        <button class="m-toggle" id="mt" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
-    <div class="grid-overlay"></div>
-
-    <header id="header">
-        <div class="container nav">
-            <a class="brand" href="/">Seed<span>Studio</span></a>
-            <nav class="nav-links" id="navLinks">
-                <a href="/">Home</a>
-                <a href="/education-ai/student-learning">Education</a>
-                <a href="/industry-ai/healthcare">Industry</a>
-                <a href="/agricultural-ai/crop-monitoring">Agriculture</a>
-                <a class="nav-cta" href="mailto:hello@seedstudio.example">Get Started</a>
-            </nav>
-            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
+</header>
+<div class="page">
+    <div class="section" id="s1">
+        <div class="section-inner">
+            <div class="hero-grid">
+                <div>
+                    <div class="hero-badge"><span class="d"></span> AI-Powered Innovation</div>
+                    <h1>""" + hero_title + """</h1>
+                    <p>""" + intro + """</p>
+                    <div class="hero-actions">
+                        <a class="btn btn-p" href="mailto:hello@seedstudio.example">
+                            """ + cta_text + """
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                        <a class="btn btn-s" href="#feat">Explore</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-glow-box">
+                        <div class="inner">
+                            <div class="big-icon">""" + chr(0x2728) + """</div>
+                            <p>Next-Gen AI Technology</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </header>
-
-    <main>
-        <section class="hero">
-            <div class="container hero-content">
-                <div class="hero-badge">
-                    <span class="dot"></span>
-                    AI-Powered Solutions
-                </div>
-                <h1>{hero_title}</h1>
-                <p>{intro}</p>
-                <div class="hero-actions">
-                    <a class="btn btn-primary" href="mailto:hello@seedstudio.example">
-                        {cta_text}
-                        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                    <a class="btn btn-secondary" href="#features">
-                        Learn More
-                    </a>
-                </div>
+    </div>
+    <div class="section" id="s2">
+        <div class="section-inner">
+            <div class="sh-s reveal"><div class="sh-l">Features</div><h2 class="sh-t">What's Included</h2><p class="sh-p">Cutting-edge capabilities designed for the future.</p></div>
+            <div class="fg">""" + feature_items + """</div>
+        </div>
+    </div>
+    <div class="section" id="s3">
+        <div class="section-inner">
+            <div class="sh-s reveal"><div class="sh-l">Process</div><h2 class="sh-t">How It Works</h2><p class="sh-p">Simple, powerful, and efficient.</p></div>
+            <div class="sg">""" + hiw_items + """</div>
+        </div>
+    </div>
+    <div class="section" id="s4">
+        <div class="section-inner">
+            <div class="sh-s reveal"><div class="sh-l">Benefits</div><h2 class="sh-t">Why Choose Us</h2><p class="sh-p">Proven results that transform businesses.</p></div>
+            <div class="bc reveal"><ul>""" + benefit_items + """</ul></div>
+        </div>
+    </div>
+    <div class="section" id="s5">
+        <div class="section-inner">
+            <div class="cta-b reveal">
+                <h2>Ready to Get Started?</h2>
+                <p>Let's build the future together.</p>
+                <a class="btn btn-p" href="mailto:hello@seedstudio.example">
+                    Schedule a Consultation
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
             </div>
-        </section>
-
-        <section id="features">
-            <div class="container">
-                <div class="section-header" data-aos="fade-up">
-                    <div class="section-label">Key Features</div>
-                    <h2 class="section-title">What's Included</h2>
-                    <p class="section-subtitle">Everything you need to transform your workflow with cutting-edge AI technology.</p>
-                </div>
-                <div class="features-grid">
-                    {feature_items}
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="container">
-                <div class="section-header" data-aos="fade-up">
-                    <div class="section-label">How It Works</div>
-                    <h2 class="section-title">Three Simple Steps</h2>
-                    <p class="section-subtitle">Get started in minutes and see results immediately.</p>
-                </div>
-                <div class="steps-grid">
-                    {how_it_works_items}
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="container">
-                <div class="section-header" data-aos="fade-up">
-                    <div class="section-label">Why Choose Us</div>
-                    <h2 class="section-title">Core Benefits</h2>
-                    <p class="section-subtitle">Proven results that speak for themselves.</p>
-                </div>
-                <div class="benefits-container" data-aos="fade-up">
-                    <ul>
-                        {benefit_items}
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="container">
-                <div class="cta-section" data-aos="fade-up">
-                    <h2>Ready to Get Started?</h2>
-                    <p>Contact us today to discuss how this solution fits your needs.</p>
-                    <a class="btn btn-primary" href="mailto:hello@seedstudio.example">
-                        Schedule a Consultation
-                        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        // Header scroll effect
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {{
-            header.classList.toggle('scrolled', window.scrollY > 50);
-        }});
-
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        mobileToggle.addEventListener('click', () => {{
-            mobileToggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        }});
-        navLinks.querySelectorAll('a').forEach(link => {{
-            link.addEventListener('click', () => {{
-                mobileToggle.classList.remove('active');
-                navLinks.classList.remove('active');
-            }});
-        }});
-
-        // Scroll animations
-        const observer = new IntersectionObserver((entries) => {{
-            entries.forEach(entry => {{
-                if (entry.isIntersecting) {{
-                    entry.target.classList.add('aos-animate');
-                }}
-            }});
-        }}, {{ threshold: 0.1 }});
-
-        document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
-    </script>
+        </div>
+    </div>
+</div>
+<script>
+const h=document.getElementById('h');
+window.addEventListener('scroll',function(){if(window.scrollY > 50){h.classList.add('scrolled')}else{h.classList.remove('scrolled')}});
+const mt=document.getElementById('mt'),nl=document.getElementById('nl');
+mt.addEventListener('click',function(){mt.classList.toggle('active');nl.classList.toggle('active');});
+nl.querySelectorAll('a').forEach(function(l){l.addEventListener('click',function(){mt.classList.remove('active');nl.classList.remove('active');});});
+const obs=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting)e.target.classList.add('v');});},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+const sections=document.querySelectorAll('.section');
+const bgLayers=[document.getElementById('bg1'),document.getElementById('bg2'),document.getElementById('bg3'),document.getElementById('bg4')];
+function updateBg(){
+    const scrollY=window.scrollY+window.innerHeight/2;
+    let activeIdx=0;
+    sections.forEach(function(sec,i){
+        const top=sec.offsetTop,bottom=top+sec.offsetHeight;
+        if(scrollY>=top&&scrollY<bottom)activeIdx=i;
+    });
+    bgLayers.forEach(function(layer,i){
+        layer.style.opacity=i===activeIdx?'1':'0';
+    });
+}
+window.addEventListener('scroll',updateBg);
+window.addEventListener('resize',updateBg);
+updateBg();
+const c=document.getElementById('bg'),ctx=c.getContext('2d');
+c.width=window.innerWidth;c.height=window.innerHeight;
+window.addEventListener('resize',function(){c.width=window.innerWidth;c.height=window.innerHeight;});
+const particles=[];
+const colors=['#6C5CE7','#00D2FF','#00E676','#FF6584'];
+for(let i=0;i<80;i++){
+    particles.push({
+        x:Math.random()*c.width,y:Math.random()*c.height,
+        vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,
+        r:Math.random()*2+1,c:colors[Math.floor(Math.random()*colors.length)],
+        a:Math.random()*.4+.1
+    });
+}
+function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    particles.forEach(function(p){
+        p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0||p.x>c.width)p.vx*=-1;
+        if(p.y<0||p.y>c.height)p.vy*=-1;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.c;
+        ctx.globalAlpha=p.a;
+        ctx.fill();
+        ctx.globalAlpha=1;
+    });
+    for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+            const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<150){
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x,particles[i].y);
+                ctx.lineTo(particles[j].x,particles[j].y);
+                ctx.strokeStyle='rgba(108,92,231,'+(.06*(1-dist/150))+')';
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(draw);
+}
+draw();
+</script>
 </body>
 </html>"""
+    return html
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -698,720 +298,299 @@ async def frontend_index():
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SeedStudio | AI Business Solutions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #6C63FF;
-            --primary-dark: #5A52D5;
-            --primary-light: #8B85FF;
-            --secondary: #FF6584;
-            --accent: #00D2FF;
-            --bg-dark: #0a0a1a;
-            --bg-card: rgba(255,255,255,0.05);
-            --bg-card-hover: rgba(255,255,255,0.08);
-            --text: #ffffff;
-            --text-muted: rgba(255,255,255,0.6);
-            --border: rgba(255,255,255,0.1);
-            --glass: rgba(255,255,255,0.03);
-            --shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-        .bg-animation {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1; overflow: hidden;
-        }
-        .bg-animation .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.3;
-            animation: orbFloat 20s ease-in-out infinite;
-        }
-        .bg-animation .orb:nth-child(1) { width: 600px; height: 600px; background: var(--primary); top: -200px; left: -200px; }
-        .bg-animation .orb:nth-child(2) { width: 500px; height: 500px; background: var(--secondary); bottom: -150px; right: -150px; animation-delay: -7s; }
-        .bg-animation .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -14s; }
-        @keyframes orbFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(100px, -50px) scale(1.1); }
-            50% { transform: translate(-50px, 100px) scale(0.9); }
-            75% { transform: translate(80px, 50px) scale(1.05); }
-        }
-        .grid-overlay {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: -1; pointer-events: none;
-        }
-        a { color: inherit; text-decoration: none; }
-        .container { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
-
-        header {
-            position: fixed; top: 0; left: 0; right: 0;
-            z-index: 1000; padding: 16px 0;
-            transition: all 0.3s ease;
-        }
-        header.scrolled {
-            background: rgba(10,10,26,0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 10px 0;
-        }
-        .nav { display: flex; align-items: center; justify-content: space-between; }
-        .brand {
-            font-size: 1.5rem; font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-        .brand span { color: var(--text); -webkit-text-fill-color: var(--text); }
-        .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a {
-            color: var(--text-muted); font-weight: 500; font-size: 0.9rem;
-            transition: color 0.3s ease; position: relative;
-        }
-        .nav-links a::after {
-            content: ''; position: absolute;
-            bottom: -4px; left: 0; width: 0; height: 2px;
-            background: var(--primary); transition: width 0.3s ease;
-        }
-        .nav-links a:hover { color: var(--text); }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-cta {
-            padding: 10px 24px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50px; color: white !important; font-weight: 600 !important;
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        }
-        .nav-cta::after { display: none !important; }
-        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108,99,255,0.3); }
-        .mobile-toggle {
-            display: none; flex-direction: column; gap: 5px;
-            cursor: pointer; background: none; border: none; padding: 5px;
-        }
-        .mobile-toggle span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s ease; }
-
-        .hero {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 60px;
-            align-items: center;
-            padding: 120px 0 60px;
-        }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 8px 16px;
-            background: rgba(108,99,255,0.1);
-            border: 1px solid rgba(108,99,255,0.2);
-            border-radius: 50px;
-            font-size: 0.85rem; color: var(--primary-light);
-            margin-bottom: 24px;
-            animation: fadeInUp 0.6s ease;
-        }
-        .hero-badge .dot {
-            width: 8px; height: 8px; background: var(--primary);
-            border-radius: 50%; animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
-        .hero h1 {
-            font-size: clamp(2.5rem, 4.5vw, 3.8rem);
-            font-weight: 900; line-height: 1.1;
-            margin-bottom: 20px; letter-spacing: -1px;
-            animation: fadeInUp 0.6s ease 0.1s both;
-        }
-        .hero h1 .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            font-size: 1.1rem; color: var(--text-muted);
-            max-width: 540px; margin-bottom: 32px;
-            animation: fadeInUp 0.6s ease 0.2s both;
-        }
-        .hero-actions {
-            display: flex; gap: 16px; flex-wrap: wrap;
-            animation: fadeInUp 0.6s ease 0.3s both;
-        }
-        .btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 14px 28px; border-radius: 50px;
-            font-weight: 600; font-size: 0.95rem;
-            transition: all 0.3s ease; cursor: pointer; border: none;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; box-shadow: 0 10px 30px rgba(108,99,255,0.25);
-        }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(108,99,255,0.35); }
-        .btn-secondary {
-            background: var(--glass); color: var(--text);
-            border: 1px solid var(--border); backdrop-filter: blur(10px);
-        }
-        .btn-secondary:hover { background: var(--bg-card); transform: translateY(-3px); }
-        .btn .arrow { transition: transform 0.3s ease; }
-        .btn:hover .arrow { transform: translateX(4px); }
-
-        .hero-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px;
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.6s ease 0.4s both;
-        }
-        .hero-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
-        .hero-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-        .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .metric {
-            padding: 16px;
-            background: rgba(108,99,255,0.05);
-            border: 1px solid rgba(108,99,255,0.1);
-            border-radius: 14px;
-            transition: all 0.3s ease;
-        }
-        .metric:hover { background: rgba(108,99,255,0.1); transform: translateY(-2px); }
-        .metric strong { display: block; font-size: 1rem; color: var(--primary-light); margin-bottom: 4px; }
-        .metric span { font-size: 0.8rem; color: var(--text-muted); }
-
-        section { padding: 100px 0; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-label {
-            display: inline-block; padding: 6px 14px;
-            background: rgba(108,99,255,0.1);
-            border: 1px solid rgba(108,99,255,0.2);
-            border-radius: 50px;
-            font-size: 0.8rem; font-weight: 600;
-            color: var(--primary-light);
-            text-transform: uppercase; letter-spacing: 1px;
-            margin-bottom: 16px;
-        }
-        .section-title {
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            font-weight: 800; letter-spacing: -0.5px;
-            margin-bottom: 16px;
-        }
-        .section-subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
-
-        .service-category {
-            margin-bottom: 40px;
-            padding: 40px;
-            border-radius: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-        .service-category:hover { border-color: rgba(108,99,255,0.2); }
-        .service-category h3 {
-            font-size: 1.4rem; font-weight: 700;
-            margin-bottom: 24px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 24px;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            display: block;
-        }
-        .card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-6px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            border-color: rgba(108,99,255,0.3);
-        }
-        .card-icon-wrap {
-            width: 56px; height: 56px;
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,210,255,0.1));
-        }
-        .card-icon { width: 28px; height: 28px; color: var(--primary-light); }
-        .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
-
-        .about-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 48px;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .about-section p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; }
-
-        .cta-section {
-            text-align: center;
-            padding: 80px 40px;
-            background: linear-gradient(135deg, rgba(108,99,255,0.08), rgba(0,210,255,0.05));
-            border: 1px solid rgba(108,99,255,0.15);
-            border-radius: 32px;
-            position: relative;
-            overflow: hidden;
-        }
-        .cta-section::before {
-            content: '';
-            position: absolute; top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at center, rgba(108,99,255,0.05) 0%, transparent 50%);
-            animation: ctaGlow 8s ease-in-out infinite;
-        }
-        @keyframes ctaGlow { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(5%, 5%); } }
-        .cta-section h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; position: relative; }
-        .cta-section p { color: var(--text-muted); margin-bottom: 28px; position: relative; }
-        .cta-section .btn { position: relative; }
-
-        .chat-launcher {
-            position: fixed; right: 28px; bottom: 28px;
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff; border: none;
-            box-shadow: 0 10px 30px rgba(108,99,255,0.3);
-            cursor: pointer; z-index: 20;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        .chat-launcher:hover { transform: scale(1.1); box-shadow: 0 15px 40px rgba(108,99,255,0.4); }
-        .chat-panel {
-            position: fixed; right: 24px; bottom: 100px;
-            width: 380px; max-width: calc(100% - 32px);
-            background: rgba(20,20,40,0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-            overflow: hidden; display: none; z-index: 20;
-        }
-        .chat-panel.active { display: block; animation: fadeInUp 0.3s ease; }
-        .chat-header {
-            padding: 16px 20px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .chat-header h4 { margin: 0; font-size: 1rem; font-weight: 600; }
-        .chat-close {
-            width: 28px; height: 28px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            cursor: pointer; font-weight: 700; font-size: 1.1rem;
-            transition: background 0.3s ease;
-        }
-        .chat-close:hover { background: rgba(255,255,255,0.3); }
-        .chat-messages {
-            max-height: 340px; overflow-y: auto;
-            padding: 18px 20px;
-            background: rgba(0,0,0,0.2);
-        }
-        .chat-message { margin-bottom: 14px; display: flex; }
-        .chat-message.user { justify-content: flex-end; }
-        .chat-message.bot { justify-content: flex-start; }
-        .bubble {
-            display: inline-block; padding: 12px 16px;
-            border-radius: 18px; max-width: 85%;
-            line-height: 1.5; font-size: 0.9rem;
-        }
-        .chat-message.user .bubble {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white; border-bottom-right-radius: 4px;
-        }
-        .chat-message.bot .bubble {
-            background: rgba(255,255,255,0.08);
-            color: var(--text); border-bottom-left-radius: 4px;
-        }
-        .chat-input {
-            display: flex; gap: 10px;
-            border-top: 1px solid var(--border);
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.3);
-        }
-        .chat-input input {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px 14px;
-            font-size: 0.9rem;
-            color: var(--text);
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        .chat-input input:focus { border-color: var(--primary); }
-        .chat-input input::placeholder { color: var(--text-muted); }
-        .chat-input button {
-            border: none; border-radius: 12px;
-            padding: 12px 18px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff; cursor: pointer;
-            font-weight: 600; font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-        .chat-input button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108,99,255,0.3); }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        [data-aos] { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
-        [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
-
-        @media (max-width: 860px) {
-            .hero { grid-template-columns: 1fr; gap: 40px; padding: 100px 0 40px; }
-            .feature-grid { grid-template-columns: 1fr; }
-            .nav-links {
-                display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(10,10,26,0.98);
-                flex-direction: column; justify-content: center; align-items: center;
-                gap: 24px; z-index: 999;
-            }
-            .nav-links.active { display: flex; }
-            .mobile-toggle { display: flex; z-index: 1000; }
-            .mobile-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-            .mobile-toggle.active span:nth-child(2) { opacity: 0; }
-            .mobile-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-            .chat-panel { right: 16px; left: 16px; bottom: 90px; width: auto; }
-            .service-category { padding: 24px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SeedStudio | Future of AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#6C5CE7;--s:#00D2FF;--g:#00E676;--w:#ffffff;--b:#0a0a1a;--t:rgba(255,255,255,0.7)}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--b);color:var(--w);overflow-x:hidden}
+canvas#bg{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.bg-layer{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;transition:opacity 1.2s ease}
+.bg-layer-1{background:radial-gradient(ellipse at 20% 50%,#0a0a2e,#0a0a1a);opacity:1}
+.bg-layer-2{background:radial-gradient(ellipse at 80% 30%,#1a0a2e,#0a0a1a);opacity:0}
+.bg-layer-3{background:radial-gradient(ellipse at 50% 80%,#0a1a2e,#0a0a1a);opacity:0}
+.bg-layer-4{background:radial-gradient(ellipse at 30% 70%,#2e0a1a,#0a0a1a);opacity:0}
+.page{position:relative;z-index:1}
+.section{min-height:100vh;display:flex;align-items:center;position:relative;padding:80px 0}
+.section-inner{width:min(1200px,calc(100%-48px));margin:0 auto;position:relative;z-index:2}
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:.4s}
+header.scrolled{background:rgba(10,10,26,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(108,92,231,0.15)}
+.nav{display:flex;align-items:center;justify-content:space-between;width:min(1200px,calc(100%-48px));margin:0 auto}
+.brand{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--p),var(--s));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand span{color:var(--w);-webkit-text-fill-color:var(--w)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{color:var(--t);font-weight:500;font-size:.9rem;transition:.3s;position:relative;text-decoration:none}
+.nav-links a:hover{color:var(--w)}
+.btn-glow{padding:10px 24px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:50px;color:#fff!important;font-weight:600!important;box-shadow:0 0 30px rgba(108,92,231,0.3);transition:.3s!important}
+.btn-glow:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(108,92,231,0.5)!important}
+.m-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:5px}
+.m-toggle span{width:24px;height:2px;background:var(--w);border-radius:2px;transition:.3s}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center;min-height:100vh;padding:120px 0 60px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid rgba(108,92,231,.3);border-radius:50px;font-size:.8rem;color:var(--p);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
+.hero-badge .d{width:6px;height:6px;background:var(--p);border-radius:50%}
+.hero h1{font-size:clamp(2.2rem,4.5vw,3.8rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-1px}
+.hero h1 .g{background:linear-gradient(135deg,var(--p),var(--s));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.05rem;color:var(--t);max-width:520px;margin-bottom:28px;line-height:1.8}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:50px;font-weight:600;font-size:.95rem;transition:.3s;cursor:pointer;border:none;text-decoration:none}
+.btn-p{background:linear-gradient(135deg,var(--p),#5A52D5);color:#fff;box-shadow:0 10px 40px rgba(108,92,231,0.3)}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 15px 50px rgba(108,92,231,0.45)}
+.btn-s{background:rgba(255,255,255,.05);color:var(--w);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px)}
+.btn-s:hover{background:rgba(255,255,255,.1);transform:translateY(-3px)}
+.hero-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px;backdrop-filter:blur(10px)}
+.hero-card h3{font-size:1.15rem;font-weight:700;margin-bottom:6px}
+.hero-card>p{font-size:.85rem;color:var(--t);margin-bottom:20px}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.m{padding:14px;background:rgba(108,92,231,.05);border:1px solid rgba(108,92,231,.1);border-radius:12px;transition:.3s}
+.m:hover{background:rgba(108,92,231,.1);transform:translateY(-2px)}
+.m strong{display:block;font-size:.95rem;color:var(--p);margin-bottom:2px}
+.m span{font-size:.8rem;color:var(--t)}
+.hero-visual{position:relative}
+.hero-glow-box{width:100%;aspect-ratio:1;border-radius:30px;background:linear-gradient(135deg,rgba(108,92,231,.1),rgba(0,210,255,.05));border:1px solid rgba(108,92,231,.15);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-glow-box::before{content:'';position:absolute;width:200%;height:200%;background:conic-gradient(from 0deg,var(--p),var(--s),var(--p));animation:spin 10s linear infinite;opacity:.15}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-glow-box .inner{position:relative;z-index:1;text-align:center}
+.hero-glow-box .inner .big-icon{font-size:6rem}
+.hero-glow-box .inner p{font-size:.9rem;color:var(--t);margin-top:12px}
+.services-showcase{padding:40px 0}
+.service-floating-card{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:60px 48px;margin-bottom:40px;border-radius:32px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);transition:.5s;position:relative;overflow:hidden}
+.service-floating-card:hover{border-color:rgba(108,92,231,.2);transform:translateY(-4px);box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.service-floating-card .card-glow{position:absolute;top:-50%;right:-30%;width:50%;height:200%;background:radial-gradient(circle,rgba(108,92,231,.06),transparent 70%);pointer-events:none}
+.service-floating-card:nth-child(2) .card-glow{left:-30%;right:auto}
+.service-floating-card:nth-child(3) .card-glow{top:auto;bottom:-50%}
+.sfc-icon{font-size:3.5rem;margin-bottom:16px}
+.sfc-content h3{font-size:1.6rem;font-weight:700;margin-bottom:12px}
+.sfc-content p{color:var(--t);font-size:.95rem;line-height:1.8;margin-bottom:20px}
+.sfc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sfc-item{padding:12px 16px;background:rgba(108,92,231,.04);border:1px solid rgba(108,92,231,.1);border-radius:12px;font-size:.85rem;transition:.3s}
+.sfc-item:hover{background:rgba(108,92,231,.08);transform:translateX(3px)}
+.sfc-item strong{display:block;color:var(--p);font-size:.9rem;margin-bottom:2px}
+.sfc-item span{color:var(--t);font-size:.8rem}
+.sfc-visual{display:flex;align-items:center;justify-content:center}
+.sfc-visual .globe{width:200px;height:200px;border-radius:50%;background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(0,210,255,.08));border:1px solid rgba(108,92,231,.2);display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+.sfc-visual .globe::before{content:'';position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(108,92,231,.1);animation:pulse-ring 3s ease-in-out infinite}
+@keyframes pulse-ring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.5}}
+.sh-s{text-align:center;margin-bottom:50px}
+.sh-l{display:inline-block;padding:6px 14px;border:1px solid rgba(108,92,231,.25);border-radius:50px;font-size:.75rem;font-weight:600;color:var(--p);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.sh-t{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:10px}
+.sh-p{color:var(--t);font-size:1rem;max-width:500px;margin:0 auto}
+.about-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:24px;padding:48px;text-align:center;max-width:800px;margin:0 auto}
+.about-card p{color:var(--t);font-size:1.05rem;line-height:1.9}
+.cta-b{text-align:center;padding:80px 40px;background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(0,210,255,.04));border:1px solid rgba(108,92,231,.15);border-radius:32px;position:relative;overflow:hidden}
+.cta-b::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3Cpattern id='g' x='25' y='25' width='50' height='50' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='25' cy='25' r='1' fill='rgba(108,92,231,.1)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23g)'/%3E%3C/svg%3E");opacity:.5}
+.cta-b h2{font-size:2rem;font-weight:800;margin-bottom:10px;position:relative}
+.cta-b p{color:var(--t);margin-bottom:24px;position:relative}
+.cta-b .btn{position:relative}
+.chat-l{position:fixed;right:28px;bottom:28px;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--p),#5A52D5);color:#fff;border:none;box-shadow:0 10px 30px rgba(108,92,231,.3);cursor:pointer;z-index:20;font-size:1.4rem;transition:.3s}
+.chat-l:hover{transform:scale(1.1);box-shadow:0 15px 40px rgba(108,92,231,.4)}
+.chat-p{position:fixed;right:24px;bottom:96px;width:360px;max-width:calc(100%-32px);background:rgba(15,15,35,.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.5);overflow:hidden;display:none;z-index:20}
+.chat-p.active{display:block}
+.chat-h{padding:14px 18px;background:linear-gradient(135deg,var(--p),#5A52D5);color:#fff;display:flex;justify-content:space-between;align-items:center}
+.chat-h h4{margin:0;font-size:.95rem;font-weight:600}
+.chat-x{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;font-weight:700;font-size:1rem;transition:.3s}
+.chat-x:hover{background:rgba(255,255,255,.3)}
+.chat-ms{max-height:300px;overflow-y:auto;padding:16px 18px;background:rgba(0,0,0,.2)}
+.chat-m{margin-bottom:12px;display:flex}
+.chat-m.u{justify-content:flex-end}
+.chat-m.b{justify-content:flex-start}
+.bub{display:inline-block;padding:10px 14px;border-radius:16px;max-width:85%;line-height:1.5;font-size:.85rem}
+.chat-m.u .bub{background:linear-gradient(135deg,var(--p),#5A52D5);color:white;border-bottom-right-radius:4px}
+.chat-m.b .bub{background:rgba(255,255,255,.06);color:var(--w);border-bottom-left-radius:4px}
+.chat-i{display:flex;gap:10px;border-top:1px solid rgba(255,255,255,.06);padding:12px 16px;background:rgba(0,0,0,.2)}
+.chat-i input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:.85rem;color:var(--w);outline:none;transition:.3s}
+.chat-i input:focus{border-color:var(--p)}
+.chat-i button{border:none;border-radius:10px;padding:10px 16px;background:linear-gradient(135deg,var(--p),#5A52D5);color:#fff;cursor:pointer;font-weight:600;font-size:.85rem;transition:.3s}
+.chat-i button:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(108,92,231,.3)}
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.22,1,.36,1)}
+.reveal.v{opacity:1;transform:translateY(0)}
+@media(max-width:860px){
+    .hero-grid,.service-floating-card{grid-template-columns:1fr;gap:30px}
+    .sfc-grid{grid-template-columns:1fr}
+    .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,10,26,.98);flex-direction:column;justify-content:center;align-items:center;gap:24px;z-index:99}
+    .nav-links.active{display:flex}
+    .m-toggle{display:flex;z-index:100}
+    .m-toggle.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .m-toggle.active span:nth-child(2){opacity:0}
+    .m-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+    .service-floating-card{padding:32px 24px}
+    .sfc-visual .globe{width:140px;height:140px;font-size:3rem}
+}
+</style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="orb"></div>
-        <div class="orb"></div>
-        <div class="orb"></div>
+<canvas id="bg"></canvas>
+<div class="bg-layer bg-layer-1" id="bg1"></div>
+<div class="bg-layer bg-layer-2" id="bg2"></div>
+<div class="bg-layer bg-layer-3" id="bg3"></div>
+<div class="bg-layer bg-layer-4" id="bg4"></div>
+<header id="h">
+    <div class="nav">
+        <a class="brand" href="/">Seed<span>Studio</span></a>
+        <nav class="nav-links" id="nl">
+            <a href="#services">Services</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a class="btn-glow" href="mailto:hello@seedstudio.example">Get Started</a>
+        </nav>
+        <button class="m-toggle" id="mt" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
-    <div class="grid-overlay"></div>
-
-    <header id="header">
-        <div class="container nav">
-            <a class="brand" href="/">Seed<span>Studio</span></a>
-            <nav class="nav-links" id="navLinks">
-                <a href="#services">Services</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <a class="nav-cta" href="mailto:hello@seedstudio.example">Get Started</a>
-            </nav>
-            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </header>
-
-    <main>
-        <div class="container">
-            <section class="hero">
+</header>
+<div class="page">
+    <div class="section">
+        <div class="section-inner">
+            <div class="hero-grid">
                 <div>
-                    <div class="hero-badge">
-                        <span class="dot"></span>
-                        AI Business Solutions
-                    </div>
-                    <h1>Intelligent <span class="gradient-text">AI solutions</span> for education and industries.</h1>
-                    <p>We build AI-powered platforms for schools, colleges, healthcare, manufacturing, and agriculture to simplify learning, improve operations, and accelerate smarter decisions.</p>
+                    <div class="hero-badge"><span class="d"></span> The Future of AI</div>
+                    <h1>Intelligent <span class="g">AI solutions</span> for education & industry</h1>
+                    <p>We build next-gen AI platforms for schools, healthcare, manufacturing, and agriculture — simplifying learning, optimizing operations, and driving smarter decisions.</p>
                     <div class="hero-actions">
-                        <a class="btn btn-primary" href="#contact">
+                        <a class="btn btn-p" href="#contact">
                             Book a Consultation
-                            <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
-                        <a class="btn btn-secondary" href="#services">Explore Solutions</a>
+                        <a class="btn btn-s" href="#services">Explore</a>
                     </div>
                 </div>
-                <div class="hero-card">
-                    <h3>What We Enable</h3>
-                    <p>Personalized learning support, progress tracking, and industry-ready automation built around real business needs.</p>
-                    <div class="metric-grid">
-                        <div class="metric"><strong>Learning AI</strong><span>For students and teachers</span></div>
-                        <div class="metric"><strong>Industry AI</strong><span>Healthcare, mechanical, agriculture</span></div>
-                        <div class="metric"><strong>Progress Insights</strong><span>Student growth and evaluation</span></div>
-                        <div class="metric"><strong>Automation</strong><span>Smarter operations and workflows</span></div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <section id="services">
-            <div class="container">
-                <div class="section-header" data-aos="fade-up">
-                    <div class="section-label">Solutions</div>
-                    <h2 class="section-title">Our AI Service Offerings</h2>
-                    <p class="section-subtitle">Cutting-edge AI solutions tailored for every sector.</p>
-                </div>
-
-                <div class="service-category" data-aos="fade-up">
-                    <h3>🎓 Education AI</h3>
-                    <div class="feature-grid">
-                        <a class="card" href="/education-ai/student-learning">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2C7 2 3.25 5.75 3.25 10.75c0 5.5 4.75 9 8.75 11.25 4-2.25 8.75-5.75 8.75-11.25C20.75 5.75 17 2 12 2z"/>
-                                    <circle cx="12" cy="10.75" r="4.75"/>
-                                </svg>
-                            </div>
-                            <h3>Student Learning Agent</h3>
-                            <p>Personalized AI tutoring that adapts to each student's learning pace and style.</p>
-                        </a>
-                        <a class="card" href="/education-ai/teacher-dashboard">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="3" y1="9" x2="21" y2="9"></line>
-                                    <line x1="9" y1="21" x2="9" y2="9"></line>
-                                </svg>
-                            </div>
-                            <h3>Teacher Dashboard</h3>
-                            <p>Real-time classroom analytics and student engagement tracking tools.</p>
-                        </a>
-                        <a class="card" href="/education-ai/parent-portal">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="9" cy="7" r="4"></circle>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                </svg>
-                            </div>
-                            <h3>Parent Portal</h3>
-                            <p>Clear dashboards showing student progress and learning recommendations.</p>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="service-category" data-aos="fade-up">
-                    <h3>🏭 Industry AI</h3>
-                    <div class="feature-grid">
-                        <a class="card" href="/industry-ai/healthcare">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                                </svg>
-                            </div>
-                            <h3>Healthcare AI</h3>
-                            <p>AI solutions for diagnostic support and hospital workflow optimization.</p>
-                        </a>
-                        <a class="card" href="/industry-ai/mechanical">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                                </svg>
-                            </div>
-                            <h3>Mechanical AI</h3>
-                            <p>Equipment monitoring and predictive maintenance for industrial operations.</p>
-                        </a>
-                        <a class="card" href="/industry-ai/automation">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                    <line x1="8" y1="21" x2="16" y2="21"></line>
-                                    <line x1="12" y1="17" x2="12" y2="21"></line>
-                                </svg>
-                            </div>
-                            <h3>Industrial Automation</h3>
-                            <p>Automate repetitive processes and improve operational efficiency.</p>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="service-category" data-aos="fade-up">
-                    <h3>🌾 Agricultural AI</h3>
-                    <div class="feature-grid">
-                        <a class="card" href="/agricultural-ai/crop-monitoring">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2C7.5 2 4 5.5 4 10c0 5.25 6 10 8 10s8-4.75 8-10c0-4.5-3.5-8-8-8z"/>
-                                    <circle cx="12" cy="10" r="2.5"/>
-                                </svg>
-                            </div>
-                            <h3>Crop Monitoring</h3>
-                            <p>Real-time field monitoring and early issue detection using AI.</p>
-                        </a>
-                        <a class="card" href="/agricultural-ai/precision-farming">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 2l5 9h-3l2 7-4-3-4 3 2-7H7l5-9z"/>
-                                </svg>
-                            </div>
-                            <h3>Precision Farming</h3>
-                            <p>AI-optimized irrigation, fertilization, and resource management.</p>
-                        </a>
-                        <a class="card" href="/agricultural-ai/weather-intelligence">
-                            <div class="card-icon-wrap">
-                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
-                                </svg>
-                            </div>
-                            <h3>Weather Intelligence</h3>
-                            <p>Predictive weather analytics and farm planning recommendations.</p>
-                        </a>
+                <div class="hero-visual">
+                    <div class="hero-glow-box">
+                        <div class="inner">
+                            <div class="big-icon">✨</div>
+                            <p>Next-Gen AI Platform</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section id="about">
-            <div class="container">
-                <div class="section-header" data-aos="fade-up">
-                    <div class="section-label">About</div>
-                    <h2 class="section-title">Why Choose Our AI Solutions</h2>
-                </div>
-                <div class="about-section" data-aos="fade-up">
-                    <p>We create practical AI business solutions that help organizations modernize learning, improve efficiency, and unlock smarter operations across education and industry. Our platforms are designed with real-world needs in mind, combining cutting-edge technology with intuitive interfaces.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact">
-            <div class="container">
-                <div class="cta-section" data-aos="fade-up">
-                    <h2>Ready to Transform Your Business with AI?</h2>
-                    <p>Let's build intelligent solutions tailored to your goals.</p>
-                    <a class="btn btn-primary" href="mailto:hello@seedstudio.example">
-                        Contact Us
-                        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <button class="chat-launcher" id="chatLauncher" aria-label="Open AI chat">🤖</button>
-    <div class="chat-panel" id="chatPanel">
-        <div class="chat-header">
-            <h4>SeedStudio AI Assistant</h4>
-            <div class="chat-close" id="chatClose">×</div>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="chat-message bot"><div class="bubble">Hello! Ask me about our AI services, products, or how SeedStudio can help your business.</div></div>
-        </div>
-        <div class="chat-input">
-            <input id="chatInput" type="text" placeholder="Type a message..." />
-            <button id="chatSend" type="button">Send</button>
         </div>
     </div>
-
-    <script>
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {
-            header.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-        mobileToggle.addEventListener('click', () => {
-            mobileToggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileToggle.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('aos-animate');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
-
-        const chatLauncher = document.getElementById('chatLauncher');
-        const chatPanel = document.getElementById('chatPanel');
-        const chatClose = document.getElementById('chatClose');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const chatSend = document.getElementById('chatSend');
-
-        function addMessage(role, text) {
-            const message = document.createElement('div');
-            message.className = 'chat-message ' + role;
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.textContent = text;
-            message.appendChild(bubble);
-            chatMessages.appendChild(message);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function respondToMessage(text) {
-            const normalized = text.toLowerCase();
-            if (/hello|hi|hey/.test(normalized)) {
-                return 'Hi there! I'm the SeedStudio assistant. Ask me about our AI solutions for education, industry, or agriculture.';
-            }
-            if (/education|student|teacher|parent/.test(normalized)) {
-                return 'Our Education AI includes tutoring, teacher dashboards, and parent portals. Which area would you like to explore?';
-            }
-            if (/healthcare|medical|hospital/.test(normalized)) {
-                return 'Our Healthcare AI supports diagnostics, workflow automation, and patient engagement for smarter care.';
-            }
-            if (/farm|crop|agriculture|weather/.test(normalized)) {
-                return 'Our Agriculture AI offers crop monitoring, precision farming, and weather intelligence to improve yields.';
-            }
-            if (/automation|industry|mechanical/.test(normalized)) {
-                return 'We provide Industry AI for equipment maintenance, production automation, and operational analytics.';
-            }
-            return 'Great question! We can help you build AI solutions for your business. Tell me more about your goals or ask for a specific service.';
-        }
-
-        chatLauncher.addEventListener('click', () => {
-            chatPanel.classList.toggle('active');
-        });
-
-        chatClose.addEventListener('click', () => {
-            chatPanel.classList.remove('active');
-        });
-
-        chatSend.addEventListener('click', () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            addMessage('user', text);
-            chatInput.value = '';
-            setTimeout(() => addMessage('bot', respondToMessage(text)), 500);
-        });
-
-        chatInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                chatSend.click();
-            }
-        });
-    </script>
+    <div class="section" id="services">
+        <div class="section-inner">
+            <div class="sh-s reveal"><div class="sh-l">Our Solutions</div><h2 class="sh-t">AI Services</h2><p class="sh-p">Cutting-edge AI tailored for every industry.</p></div>
+            <div class="services-showcase">
+                <div class="service-floating-card reveal">
+                    <div class="card-glow"></div>
+                    <div class="sfc-content">
+                        <div class="sfc-icon">🎓</div>
+                        <h3>Education AI</h3>
+                        <p>Transform learning with personalized AI tutoring, real-time teacher analytics, and parent engagement portals.</p>
+                        <div class="sfc-grid">
+                            <a href="/education-ai/student-learning" class="sfc-item" style="text-decoration:none;display:block"><strong>Student Learning</strong><span>Adaptive AI tutoring</span></a>
+                            <a href="/education-ai/teacher-dashboard" class="sfc-item" style="text-decoration:none;display:block"><strong>Teacher Dashboard</strong><span>Real-time analytics</span></a>
+                            <a href="/education-ai/parent-portal" class="sfc-item" style="text-decoration:none;display:block"><strong>Parent Portal</strong><span>Progress tracking</span></a>
+                            <div class="sfc-item"><strong>24/7 Support</strong><span>Always available</span></div>
+                        </div>
+                    </div>
+                    <div class="sfc-visual"><div class="globe">📚</div></div>
+                </div>
+                <div class="service-floating-card reveal">
+                    <div class="card-glow"></div>
+                    <div class="sfc-visual"><div class="globe">🏭</div></div>
+                    <div class="sfc-content">
+                        <div class="sfc-icon">🏭</div>
+                        <h3>Industry AI</h3>
+                        <p>Revolutionize healthcare, manufacturing, and automation with AI-powered diagnostics, predictive maintenance, and intelligent workflows.</p>
+                        <div class="sfc-grid">
+                            <a href="/industry-ai/healthcare" class="sfc-item" style="text-decoration:none;display:block"><strong>Healthcare AI</strong><span>Diagnostic support</span></a>
+                            <a href="/industry-ai/mechanical" class="sfc-item" style="text-decoration:none;display:block"><strong>Mechanical AI</strong><span>Predictive maintenance</span></a>
+                            <a href="/industry-ai/automation" class="sfc-item" style="text-decoration:none;display:block"><strong>Automation</strong><span>Process optimization</span></a>
+                            <div class="sfc-item"><strong>Analytics</strong><span>Data-driven insights</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="service-floating-card reveal">
+                    <div class="card-glow"></div>
+                    <div class="sfc-content">
+                        <div class="sfc-icon">🌾</div>
+                        <h3>Agricultural AI</h3>
+                        <p>Boost crop yields with satellite monitoring, precision farming, and AI-powered weather intelligence for smarter agriculture.</p>
+                        <div class="sfc-grid">
+                            <a href="/agricultural-ai/crop-monitoring" class="sfc-item" style="text-decoration:none;display:block"><strong>Crop Monitoring</strong><span>Real-time field health</span></a>
+                            <a href="/agricultural-ai/precision-farming" class="sfc-item" style="text-decoration:none;display:block"><strong>Precision Farming</strong><span>Resource optimization</span></a>
+                            <a href="/agricultural-ai/weather-intelligence" class="sfc-item" style="text-decoration:none;display:block"><strong>Weather AI</strong><span>Smart forecasting</span></a>
+                            <div class="sfc-item"><strong>Sustainability</strong><span>Eco-friendly farming</span></div>
+                        </div>
+                    </div>
+                    <div class="sfc-visual"><div class="globe">🌱</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section" id="about">
+        <div class="section-inner">
+            <div class="sh-s reveal"><div class="sh-l">About</div><h2 class="sh-t">Why SeedStudio?</h2></div>
+            <div class="about-card reveal">
+                <p>We build practical AI solutions that help organizations modernize learning, improve efficiency, and unlock smarter operations across education and industry. Our platforms combine cutting-edge technology with intuitive design — built for real-world impact.</p>
+            </div>
+        </div>
+    </div>
+    <div class="section" id="contact">
+        <div class="section-inner">
+            <div class="cta-b reveal">
+                <h2>Ready to Transform Your Business?</h2>
+                <p>Let's build intelligent solutions tailored to your goals.</p>
+                <a class="btn btn-p" href="mailto:hello@seedstudio.example">
+                    Contact Us
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<button class="chat-l" id="chatL" aria-label="Chat">🤖</button>
+<div class="chat-p" id="chatP">
+    <div class="chat-h"><h4>SeedStudio AI</h4><div class="chat-x" id="chatX">×</div></div>
+    <div class="chat-ms" id="chatMs"><div class="chat-m b"><div class="bub">Hi! Ask me about our AI solutions for education, industry, or agriculture.</div></div></div>
+    <div class="chat-i">
+        <input id="chatIn" type="text" placeholder="Type a message..." />
+        <button id="chatSd" type="button">Send</button>
+    </div>
+</div>
+<script>
+const h=document.getElementById('h');
+window.addEventListener('scroll',function(){if(window.scrollY>50){h.classList.add('scrolled')}else{h.classList.remove('scrolled')}});
+const mt=document.getElementById('mt'),nl=document.getElementById('nl');
+mt.addEventListener('click',function(){mt.classList.toggle('active');nl.classList.toggle('active')});
+nl.querySelectorAll('a').forEach(function(l){l.addEventListener('click',function(){mt.classList.remove('active');nl.classList.remove('active')})});
+const obs=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el)});
+const sections=document.querySelectorAll('.section');
+const bl=[document.getElementById('bg1'),document.getElementById('bg2'),document.getElementById('bg3'),document.getElementById('bg4')];
+function ub(){const sy=window.scrollY+window.innerHeight/2;let ai=0;
+sections.forEach(function(s,i){const t=s.offsetTop,b=t+s.offsetHeight;if(sy>=t&&sy<b)ai=i});
+bl.forEach(function(l,i){l.style.opacity=i===ai?'1':'0'})}
+window.addEventListener('scroll',ub);window.addEventListener('resize',ub);ub();
+const c=document.getElementById('bg'),ctx=c.getContext('2d');
+c.width=window.innerWidth;c.height=window.innerHeight;
+window.addEventListener('resize',function(){c.width=window.innerWidth;c.height=window.innerHeight});
+const pts=[],cols=['#6C5CE7','#00D2FF','#00E676','#FF6584'];
+for(let i=0;i<80;i++){pts.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,r:Math.random()*2+1,c:cols[Math.floor(Math.random()*cols.length)],a:Math.random()*.4+.1})}
+function dr(){ctx.clearRect(0,0,c.width,c.height);
+pts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;
+ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c;ctx.globalAlpha=p.a;ctx.fill();ctx.globalAlpha=1});
+for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+if(Math.sqrt(dx*dx+dy*dy)<150){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
+ctx.strokeStyle='rgba(108,92,231,'+(.06)+')';ctx.stroke()}}}
+requestAnimationFrame(dr)}
+dr();
+const chatL=document.getElementById('chatL'),chatP=document.getElementById('chatP'),chatX=document.getElementById('chatX');
+const chatMs=document.getElementById('chatMs'),chatIn=document.getElementById('chatIn'),chatSd=document.getElementById('chatSd');
+function aM(r,t){const m=document.createElement('div');m.className='chat-m '+r;
+const b=document.createElement('div');b.className='bub';b.textContent=t;
+m.appendChild(b);chatMs.appendChild(m);chatMs.scrollTop=chatMs.scrollHeight}
+function rM(t){const n=t.toLowerCase();
+if(/hello|hi|hey/.test(n))return"Hi! I'm the SeedStudio assistant. Ask me about our AI solutions.";
+if(/education|student|teacher|parent/.test(n))return"Our Education AI includes tutoring, teacher dashboards, and parent portals.";
+if(/healthcare|medical|hospital/.test(n))return"Our Healthcare AI supports diagnostics, workflow automation, and patient engagement.";
+if(/farm|crop|agriculture|weather/.test(n))return"Our Agriculture AI offers crop monitoring, precision farming, and weather intelligence.";
+if(/automation|industry|mechanical/.test(n))return"We provide Industry AI for equipment maintenance, production automation, and analytics.";
+return"Great question! We can help you build AI solutions for your business. Tell me more about your goals.";}
+chatL.addEventListener('click',function(){chatP.classList.toggle('active')});
+chatX.addEventListener('click',function(){chatP.classList.remove('active')});
+chatSd.addEventListener('click',function(){const t=chatIn.value.trim();if(!t)return;aM('u',t);chatIn.value='';setTimeout(function(){aM('b',rM(t))},500)});
+chatIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();chatSd.click()}});
+</script>
 </body>
 </html>"""
 
@@ -1420,7 +599,7 @@ async def frontend_index():
 async def education_student_learning():
     return render_service_page(
         title="Student Learning Agent",
-        hero_title="Personalized <span class='gradient-text'>AI tutoring</span> for every student.",
+        hero_title="Personalized <span class='g'>AI tutoring</span> for every student.",
         intro="Our adaptive learning AI tutors students individually, adjusting difficulty based on performance and providing step-by-step guidance through complex concepts.",
         features=[
             ("Adaptive Learning", "Content difficulty adjusts based on student performance in real-time."),
@@ -1450,7 +629,7 @@ async def education_student_learning():
 async def education_teacher_dashboard():
     return render_service_page(
         title="Teacher Dashboard",
-        hero_title="Classroom management <span class='gradient-text'>powered by AI</span> insights.",
+        hero_title="Classroom management <span class='g'>powered by AI</span> insights.",
         intro="Monitor student engagement, track individual progress, and get actionable recommendations to improve teaching effectiveness.",
         features=[
             ("Real-Time Analytics", "Live view of student engagement and performance metrics."),
@@ -1480,7 +659,7 @@ async def education_teacher_dashboard():
 async def education_parent_portal():
     return render_service_page(
         title="Parent Portal",
-        hero_title="Stay connected to your <span class='gradient-text'>child's learning</span> journey.",
+        hero_title="Stay connected to your <span class='g'>child's learning</span> journey.",
         intro="Get clear updates on your child's progress, strengths, and areas for improvement with actionable recommendations for home support.",
         features=[
             ("Progress Reports", "Weekly and monthly summaries of learning achievements."),
@@ -1510,7 +689,7 @@ async def education_parent_portal():
 async def industry_healthcare():
     return render_service_page(
         title="Healthcare AI",
-        hero_title="Smarter healthcare <span class='gradient-text'>operations with AI</span> support.",
+        hero_title="Smarter healthcare <span class='g'>operations with AI</span> support.",
         intro="Improve diagnostics, optimize workflows, and reduce administrative burden with AI-powered healthcare solutions.",
         features=[
             ("Diagnostic Support", "AI assists in analyzing medical images and patient data."),
@@ -1540,7 +719,7 @@ async def industry_healthcare():
 async def industry_mechanical():
     return render_service_page(
         title="Mechanical AI",
-        hero_title="Predictive maintenance and <span class='gradient-text'>equipment intelligence</span>.",
+        hero_title="Predictive maintenance and <span class='g'>equipment intelligence</span>.",
         intro="Monitor equipment health, predict failures before they happen, and reduce downtime with AI-powered mechanical systems.",
         features=[
             ("Equipment Monitoring", "Real-time sensor data analysis for equipment health."),
@@ -1570,7 +749,7 @@ async def industry_mechanical():
 async def industry_automation():
     return render_service_page(
         title="Industrial Automation",
-        hero_title="Automate repetitive tasks and <span class='gradient-text'>boost productivity</span>.",
+        hero_title="Automate repetitive tasks and <span class='g'>boost productivity</span>.",
         intro="Reduce manual work, minimize errors, and improve throughput with intelligent industrial automation solutions.",
         features=[
             ("Process Automation", "Automate repetitive workflows and manual tasks."),
@@ -1600,7 +779,7 @@ async def industry_automation():
 async def agricultural_crop_monitoring():
     return render_service_page(
         title="Crop Monitoring",
-        hero_title="Real-time field health <span class='gradient-text'>monitoring with AI</span>.",
+        hero_title="Real-time field health <span class='g'>monitoring with AI</span>.",
         intro="Use satellite and sensor data to monitor crop health, detect issues early, and take action before problems spread.",
         features=[
             ("Satellite Imaging", "High-resolution field monitoring using satellite data."),
@@ -1630,7 +809,7 @@ async def agricultural_crop_monitoring():
 async def agricultural_precision_farming():
     return render_service_page(
         title="Precision Farming",
-        hero_title="Optimize every resource for <span class='gradient-text'>maximum yield</span>.",
+        hero_title="Optimize every resource for <span class='g'>maximum yield</span>.",
         intro="Use AI-driven insights to optimize irrigation, fertilization, and resource allocation for better harvests and lower costs.",
         features=[
             ("Irrigation Optimization", "AI determines ideal watering schedules and amounts."),
@@ -1660,7 +839,7 @@ async def agricultural_precision_farming():
 async def agricultural_weather_intelligence():
     return render_service_page(
         title="Weather Intelligence",
-        hero_title="Make better farm decisions with <span class='gradient-text'>AI weather insights</span>.",
+        hero_title="Make better farm decisions with <span class='g'>AI weather insights</span>.",
         intro="Access AI-powered weather forecasting and recommendations tailored to your farm for smarter planning and reduced risk.",
         features=[
             ("Predictive Forecasting", "Hyper-local weather predictions for your farm."),
