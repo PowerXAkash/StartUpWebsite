@@ -14,622 +14,1351 @@ def render_service_page(
     cta_text: str = "Request a demo",
 ) -> str:
     feature_items = "".join(
-        f"<div class=\"card\"><h3>{item}</h3><p>{desc}</p></div>"
+        f"""<div class="feature-card" data-aos="fade-up">
+            <div class="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+            </div>
+            <h3>{item}</h3>
+            <p>{desc}</p>
+        </div>"""
         for item, desc in features
     )
     how_it_works_items = "".join(
-        f"<div class=\"step\"><div class=\"step-num\">{i+1}</div><h4>{title}</h4><p>{desc}</p></div>"
+        f"""<div class="step-card" data-aos="fade-up" data-aos-delay="{i*100}">
+            <div class="step-number">0{i+1}</div>
+            <div class="step-line"></div>
+            <h4>{title}</h4>
+            <p>{desc}</p>
+        </div>"""
         for i, (title, desc) in enumerate(how_it_works)
     )
-    benefit_items = "".join(f"<li>{b}</li>" for b in benefits)
-    
-    return f"""
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{title}</title>
-        <style>
-          :root {{
-            --bg: #f4f8fc;
-              <a class="brand" href="/">Seed<span>Studio</span></a>
-            --surface-2: #eef5ff;
-            --text: #14213d;
-            --muted: #5d6b82;
-            --accent: #1f4ed8;
-            --accent-2: #2563eb;
-            --accent-soft: #dbeafe;
-            --border: #dfe8f6;
-            --shadow: 0 18px 45px rgba(20, 33, 61, 0.08);
-          }}
-          * {{ box-sizing: border-box; }}
-          body {{
-            margin: 0;
-            font-family: "Segoe UI", "Inter", Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #fbfdff 0%, #f2f7ff 100%);
-              <a class="btn btn-primary" href="mailto:hello@seedstudio.example">{cta_text}</a>
+    benefit_items = "".join(
+        f"""<li data-aos="fade-up" data-aos-delay="{i*50}">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            {b}
+        </li>"""
+        for i, b in enumerate(benefits)
+    )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | SeedStudio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        :root {{
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --primary-light: #8B85FF;
+            --secondary: #FF6584;
+            --accent: #00D2FF;
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(255,255,255,0.05);
+            --bg-card-hover: rgba(255,255,255,0.08);
+            --text: #ffffff;
+            --text-muted: rgba(255,255,255,0.6);
+            --border: rgba(255,255,255,0.1);
+            --glass: rgba(255,255,255,0.03);
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }}
+        html {{ scroll-behavior: smooth; }}
+        body {{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
             line-height: 1.7;
-          }}
-          a {{ color: inherit; text-decoration: none; }}
-          .container {{ width: min(1180px, calc(100% - 32px)); margin: 0 auto; }}
-          header {{
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            background: rgba(255,255,255,0.86);
-            backdrop-filter: blur(12px);
-            z-index: 10;
-            border-bottom: 1px solid rgba(31, 78, 216, 0.08);
-          }}
-          .nav {{ display: flex; align-items: center; justify-content: space-between; gap: 20px; }}
-          .brand {{ font-size: 1.25rem; font-weight: 700; letter-spacing: 0.03em; color: var(--accent); }}
-          .brand span {{ color: var(--text); }}
-          .nav-links {{ display: flex; gap: 22px; color: var(--muted); font-weight: 500; }}
-          .nav-links a:hover {{ color: var(--accent); }}
-          main {{ padding: 40px 0; }}
-          .hero {{
-            padding: 40px 0 20px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 40px;
-          }}
-          .eyebrow {{
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            background: var(--accent-soft);
-            color: var(--accent);
-            margin-bottom: 12px;
-          }}
-          .hero h1 {{
-            font-size: clamp(2rem, 3.3vw, 2.8rem);
-            line-height: 1.2;
-            margin: 0 0 14px;
-            font-weight: 700;
-          }}
-          .hero p {{ color: var(--muted); font-size: 1.03rem; margin: 0 0 20px; max-width: 760px; }}
-          .btn {{
-            display: inline-block;
-            padding: 12px 18px;
-            border-radius: 999px;
-            font-weight: 600;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-          }}
-          .btn:hover {{ transform: translateY(-2px); }}
-          .btn-primary {{ background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 10px 24px rgba(31,78,216,0.18); }}
-          .btn-secondary {{ background: var(--surface); color: var(--text); border: 1px solid var(--border); }}
-          
-          section {{ margin-bottom: 60px; }}
-          .section-title {{
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-          }}
-          .section-heading {{ font-size: 1.8rem; margin-top: 0; margin-bottom: 12px; }}
-          
-          .feature-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 16px; }}
-          .card {{
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 22px;
-            box-shadow: var(--shadow);
-          }}
-          .card h3 {{ margin-top: 0; margin-bottom: 8px; }}
-          .card p {{ color: var(--muted); margin: 0; }}
-          
-          .steps {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 20px; }}
-          .step {{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-          }}
-          .step-num {{
-            width: 52px;
-            height: 52px;
+            overflow-x: hidden;
+        }}
+        /* Animated background */
+        .bg-animation {{
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }}
+        .bg-animation .orb {{
+            position: absolute;
             border-radius: 50%;
-            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }}
+        .bg-animation .orb:nth-child(1) {{
+            width: 600px; height: 600px;
+            background: var(--primary);
+            top: -200px; left: -200px;
+            animation-delay: 0s;
+        }}
+        .bg-animation .orb:nth-child(2) {{
+            width: 500px; height: 500px;
+            background: var(--secondary);
+            bottom: -150px; right: -150px;
+            animation-delay: -7s;
+        }}
+        .bg-animation .orb:nth-child(3) {{
+            width: 400px; height: 400px;
+            background: var(--accent);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }}
+        @keyframes orbFloat {{
+            0%, 100% {{ transform: translate(0, 0) scale(1); }}
+            25% {{ transform: translate(100px, -50px) scale(1.1); }}
+            50% {{ transform: translate(-50px, 100px) scale(0.9); }}
+            75% {{ transform: translate(80px, 50px) scale(1.05); }}
+        }}
+        /* Grid overlay */
+        .grid-overlay {{
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+            pointer-events: none;
+        }}
+        a {{ color: inherit; text-decoration: none; }}
+        .container {{ width: min(1200px, calc(100% - 40px)); margin: 0 auto; }}
+
+        /* Header */
+        header {{
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            transition: all 0.3s ease;
+        }}
+        header.scrolled {{
+            background: rgba(10,10,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+        }}
+        .nav {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }}
+        .brand {{
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }}
+        .brand span {{ color: var(--text); -webkit-text-fill-color: var(--text); }}
+        .nav-links {{ display: flex; gap: 32px; align-items: center; }}
+        .nav-links a {{
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }}
+        .nav-links a::after {{
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }}
+        .nav-links a:hover {{ color: var(--text); }}
+        .nav-links a:hover::after {{ width: 100%; }}
+        .nav-cta {{
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50px;
+            color: white !important;
+            font-weight: 600 !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }}
+        .nav-cta::after {{ display: none !important; }}
+        .nav-cta:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(108,99,255,0.3);
+        }}
+        .mobile-toggle {{
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }}
+        .mobile-toggle span {{
+            width: 24px; height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }}
+
+        /* Hero Section */
+        .hero {{
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 60px;
+            position: relative;
+        }}
+        .hero-content {{
+            max-width: 800px;
+        }}
+        .hero-badge {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(108,99,255,0.1);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--primary-light);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease;
+        }}
+        .hero-badge .dot {{
+            width: 8px; height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }}
+        @keyframes pulse {{
+            0%, 100% {{ opacity: 1; transform: scale(1); }}
+            50% {{ opacity: 0.5; transform: scale(0.8); }}
+        }}
+        .hero h1 {{
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }}
+        .hero h1 .gradient-text {{
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }}
+        .hero p {{
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }}
+        .hero-actions {{
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }}
+        .btn {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }}
+        .btn-primary {{
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: 0 10px 30px rgba(108,99,255,0.25);
+        }}
+        .btn-primary:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(108,99,255,0.35);
+        }}
+        .btn-secondary {{
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }}
+        .btn-secondary:hover {{
+            background: var(--bg-card);
+            transform: translateY(-3px);
+        }}
+        .btn .arrow {{
+            transition: transform 0.3s ease;
+        }}
+        .btn:hover .arrow {{
+            transform: translateX(4px);
+        }}
+
+        /* Sections */
+        section {{ padding: 100px 0; }}
+        .section-header {{
+            text-align: center;
+            margin-bottom: 60px;
+        }}
+        .section-label {{
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(108,99,255,0.1);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }}
+        .section-title {{
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }}
+        .section-subtitle {{
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }}
+
+        /* Feature Cards */
+        .features-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }}
+        .feature-card {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }}
+        .feature-card::before {{
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }}
+        .feature-card:hover {{
+            background: var(--bg-card-hover);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-color: rgba(108,99,255,0.3);
+        }}
+        .feature-card:hover::before {{
+            transform: scaleX(1);
+        }}
+        .feature-icon {{
+            width: 48px; height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,210,255,0.1));
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary-light);
+        }}
+        .feature-icon svg {{
+            width: 24px; height: 24px;
+        }}
+        .feature-card h3 {{
+            font-size: 1.2rem;
             font-weight: 700;
-            font-size: 1.3rem;
-            margin-bottom: 12px;
-          }}
-          .step h4 {{ margin: 8px 0 4px; }}
-          .step p {{ color: var(--muted); font-size: 0.95rem; margin: 0; }}
-          
-          .benefits-list {{
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 28px;
-            box-shadow: var(--shadow);
-          }}
-          .benefits-list ul {{ margin: 0; padding-left: 20px; }}
-          .benefits-list li {{ margin-bottom: 12px; color: var(--text); }}
-          
-          .cta {{
-            margin-top: 24px;
-            padding: 28px;
-            border-radius: 24px;
-            background: linear-gradient(90deg, rgba(31,78,216,0.08), rgba(37,99,235,0.03));
-            border: 1px solid rgba(31,78,216,0.12);
-            text-align: center;
-          }}
-          
-          @media (max-width: 860px) {{
-            .feature-grid, .steps {{ grid-template-columns: 1fr; }}
-            .nav-links {{ display: none; }}
-          }}
-        </style>
-      </head>
-      <body>
-        <header>
-          <div class="container nav">
-            <a class="brand" href="/">Seed<span>Studio</span></a>
-            <nav class="nav-links">
-              <a href="/">Home</a>
-              <a href="/education-ai">Education</a>
-              <a href="/industry-ai">Industry</a>
-              <a href="/agricultural-ai">Agriculture</a>
-            </nav>
-          </div>
-        </header>
-        
-        <main class="container">
-          <section class="hero">
-            <div class="eyebrow">{title}</div>
-            <h1>{hero_title}</h1>
-            <p>{intro}</p>
-            <a class="btn btn-primary" href="mailto:hello@novastudio.example">{cta_text}</a>
-          </section>
-          
-          <section>
-            <div class="section-title">Key Features</div>
-            <h2 class="section-heading">What's included</h2>
-            <div class="feature-grid">
-              {feature_items}
-            </div>
-          </section>
-          
-          <section>
-            <div class="section-title">How it works</div>
-            <h2 class="section-heading">Three simple steps</h2>
-            <div class="steps">
-              {how_it_works_items}
-            </div>
-          </section>
-          
-          <section>
-            <div class="section-title">Why choose us</div>
-            <h2 class="section-heading">Core benefits</h2>
-            <div class="benefits-list">
-              <ul>
-                {benefit_items}
-              </ul>
-            </div>
-          </section>
-          
-          <section class="cta">
-            <h2>Ready to get started?</h2>
-            <p>Contact us today to discuss how this solution fits your needs.</p>
-            <a class="btn btn-primary" href="mailto:hello@seedstudio.example">Schedule a consultation</a>
-          </section>
-        </main>
-      </body>
-    </html>
-    """
+            margin-bottom: 10px;
+        }}
+        .feature-card p {{
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }}
 
+        /* Steps */
+        .steps-grid {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            position: relative;
+        }}
+        .step-card {{
+            text-align: center;
+            padding: 40px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            position: relative;
+        }}
+        .step-card:hover {{
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-color: rgba(108,99,255,0.3);
+        }}
+        .step-number {{
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            line-height: 1;
+        }}
+        .step-card h4 {{
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }}
+        .step-card p {{
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }}
+
+        /* Benefits */
+        .benefits-container {{
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 800px;
+            margin: 0 auto;
+        }}
+        .benefits-container ul {{
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }}
+        .benefits-container li {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(108,99,255,0.05);
+            border: 1px solid rgba(108,99,255,0.1);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }}
+        .benefits-container li:hover {{
+            background: rgba(108,99,255,0.1);
+            border-color: rgba(108,99,255,0.2);
+            transform: translateX(4px);
+        }}
+        .check-icon {{
+            width: 20px; height: 20px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }}
+
+        /* CTA */
+        .cta-section {{
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(108,99,255,0.08), rgba(0,210,255,0.05));
+            border: 1px solid rgba(108,99,255,0.15);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }}
+        .cta-section::before {{
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(108,99,255,0.05) 0%, transparent 50%);
+            animation: ctaGlow 8s ease-in-out infinite;
+        }}
+        @keyframes ctaGlow {{
+            0%, 100% {{ transform: translate(0, 0); }}
+            50% {{ transform: translate(5%, 5%); }}
+        }}
+        .cta-section h2 {{
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+        }}
+        .cta-section p {{
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            position: relative;
+        }}
+        .cta-section .btn {{
+            position: relative;
+        }}
+
+        /* Animations */
+        @keyframes fadeInUp {{
+            from {{ opacity: 0; transform: translateY(30px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+        [data-aos] {{
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }}
+        [data-aos].aos-animate {{
+            opacity: 1;
+            transform: translateY(0);
+        }}
+
+        /* Responsive */
+        @media (max-width: 860px) {{
+            .nav-links {{
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(10,10,26,0.98);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 24px;
+                z-index: 999;
+            }}
+            .nav-links.active {{ display: flex; }}
+            .mobile-toggle {{ display: flex; z-index: 1000; }}
+            .mobile-toggle.active span:nth-child(1) {{ transform: rotate(45deg) translate(5px, 5px); }}
+            .mobile-toggle.active span:nth-child(2) {{ opacity: 0; }}
+            .mobile-toggle.active span:nth-child(3) {{ transform: rotate(-45deg) translate(5px, -5px); }}
+            .steps-grid {{ grid-template-columns: 1fr; }}
+            .benefits-container ul {{ grid-template-columns: 1fr; }}
+            .features-grid {{ grid-template-columns: 1fr; }}
+            .hero h1 {{ font-size: 2rem; }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <header id="header">
+        <div class="container nav">
+            <a class="brand" href="/">Seed<span>Studio</span></a>
+            <nav class="nav-links" id="navLinks">
+                <a href="/">Home</a>
+                <a href="/education-ai/student-learning">Education</a>
+                <a href="/industry-ai/healthcare">Industry</a>
+                <a href="/agricultural-ai/crop-monitoring">Agriculture</a>
+                <a class="nav-cta" href="mailto:hello@seedstudio.example">Get Started</a>
+            </nav>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    AI-Powered Solutions
+                </div>
+                <h1>{hero_title}</h1>
+                <p>{intro}</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="mailto:hello@seedstudio.example">
+                        {cta_text}
+                        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                    <a class="btn btn-secondary" href="#features">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-label">Key Features</div>
+                    <h2 class="section-title">What's Included</h2>
+                    <p class="section-subtitle">Everything you need to transform your workflow with cutting-edge AI technology.</p>
+                </div>
+                <div class="features-grid">
+                    {feature_items}
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-label">How It Works</div>
+                    <h2 class="section-title">Three Simple Steps</h2>
+                    <p class="section-subtitle">Get started in minutes and see results immediately.</p>
+                </div>
+                <div class="steps-grid">
+                    {how_it_works_items}
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-label">Why Choose Us</div>
+                    <h2 class="section-title">Core Benefits</h2>
+                    <p class="section-subtitle">Proven results that speak for themselves.</p>
+                </div>
+                <div class="benefits-container" data-aos="fade-up">
+                    <ul>
+                        {benefit_items}
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="cta-section" data-aos="fade-up">
+                    <h2>Ready to Get Started?</h2>
+                    <p>Contact us today to discuss how this solution fits your needs.</p>
+                    <a class="btn btn-primary" href="mailto:hello@seedstudio.example">
+                        Schedule a Consultation
+                        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {{
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        }});
+
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        mobileToggle.addEventListener('click', () => {{
+            mobileToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        }});
+        navLinks.querySelectorAll('a').forEach(link => {{
+            link.addEventListener('click', () => {{
+                mobileToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            }});
+        }});
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {{
+            entries.forEach(entry => {{
+                if (entry.isIntersecting) {{
+                    entry.target.classList.add('aos-animate');
+                }}
+            }});
+        }}, {{ threshold: 0.1 }});
+
+        document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>"""
 
 
 @router.get("/", response_class=HTMLResponse)
 async def frontend_index():
-    return """
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>AI Business Solutions</title>
-        <style>
-          :root {
-            --bg: #f4f8fc;
-            --surface: #ffffff;
-            --surface-2: #eef5ff;
-            --text: #14213d;
-            --muted: #5d6b82;
-            --accent: #1f4ed8;
-            --accent-2: #2563eb;
-            --accent-soft: #dbeafe;
-            --border: #dfe8f6;
-            --shadow: 0 18px 45px rgba(20, 33, 61, 0.08);
-          }
-          * { box-sizing: border-box; }
-          body {
-            margin: 0;
-            font-family: "Segoe UI", "Inter", Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #fbfdff 0%, #f2f7ff 100%);
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SeedStudio | AI Business Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6C63FF;
+            --primary-dark: #5A52D5;
+            --primary-light: #8B85FF;
+            --secondary: #FF6584;
+            --accent: #00D2FF;
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(255,255,255,0.05);
+            --bg-card-hover: rgba(255,255,255,0.08);
+            --text: #ffffff;
+            --text-muted: rgba(255,255,255,0.6);
+            --border: rgba(255,255,255,0.1);
+            --glass: rgba(255,255,255,0.03);
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
             color: var(--text);
             line-height: 1.7;
-          }
-          a { color: inherit; text-decoration: none; }
-          .container { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
-          header {
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            background: rgba(255,255,255,0.86);
-            backdrop-filter: blur(12px);
-            z-index: 10;
-            border-bottom: 1px solid rgba(31, 78, 216, 0.08);
-          }
-          .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-          .brand { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.03em; color: var(--accent); }
-          .brand span { color: var(--text); }
-          .nav-links { display: flex; gap: 22px; color: var(--muted); font-weight: 500; }
-          .nav-links a:hover { color: var(--accent); }
-          .hero {
+            overflow-x: hidden;
+        }
+        .bg-animation {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .bg-animation .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .bg-animation .orb:nth-child(1) { width: 600px; height: 600px; background: var(--primary); top: -200px; left: -200px; }
+        .bg-animation .orb:nth-child(2) { width: 500px; height: 500px; background: var(--secondary); bottom: -150px; right: -150px; animation-delay: -7s; }
+        .bg-animation .orb:nth-child(3) { width: 400px; height: 400px; background: var(--accent); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -14s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, -50px) scale(1.1); }
+            50% { transform: translate(-50px, 100px) scale(0.9); }
+            75% { transform: translate(80px, 50px) scale(1.05); }
+        }
+        .grid-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1; pointer-events: none;
+        }
+        a { color: inherit; text-decoration: none; }
+        .container { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000; padding: 16px 0;
+            transition: all 0.3s ease;
+        }
+        header.scrolled {
+            background: rgba(10,10,26,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+        }
+        .nav { display: flex; align-items: center; justify-content: space-between; }
+        .brand {
+            font-size: 1.5rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        .brand span { color: var(--text); -webkit-text-fill-color: var(--text); }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted); font-weight: 500; font-size: 0.9rem;
+            transition: color 0.3s ease; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute;
+            bottom: -4px; left: 0; width: 0; height: 2px;
+            background: var(--primary); transition: width 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50px; color: white !important; font-weight: 600 !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108,99,255,0.3); }
+        .mobile-toggle {
+            display: none; flex-direction: column; gap: 5px;
+            cursor: pointer; background: none; border: none; padding: 5px;
+        }
+        .mobile-toggle span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s ease; }
+
+        .hero {
+            min-height: 100vh;
             display: grid;
-            grid-template-columns: 1.05fr 0.95fr;
-            gap: 40px;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
             align-items: center;
-            padding: 74px 0 56px;
-          }
-          .eyebrow {
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            background: var(--accent-soft);
-            color: var(--accent);
-            margin-bottom: 16px;
-          }
-          .hero h1 {
-            font-size: clamp(2.2rem, 4vw, 3.4rem);
-            line-height: 1.15;
-            margin: 0 0 16px;
-            font-weight: 700;
-          }
-          .hero p { color: var(--muted); font-size: 1.03rem; margin: 0 0 24px; max-width: 620px; }
-          .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-          .btn {
-            display: inline-block;
-            padding: 12px 18px;
-            border-radius: 999px;
-            font-weight: 600;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-          }
-          .btn:hover { transform: translateY(-2px); }
-          .btn-primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 10px 24px rgba(31,78,216,0.18); }
-          .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-          .hero-card {
-            background: var(--surface);
+            padding: 120px 0 60px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px;
+            background: rgba(108,99,255,0.1);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 50px;
+            font-size: 0.85rem; color: var(--primary-light);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; background: var(--primary);
+            border-radius: 50%; animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+        .hero h1 {
+            font-size: clamp(2.5rem, 4.5vw, 3.8rem);
+            font-weight: 900; line-height: 1.1;
+            margin-bottom: 20px; letter-spacing: -1px;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.1rem; color: var(--text-muted);
+            max-width: 540px; margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+        .hero-actions {
+            display: flex; gap: 16px; flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 28px; border-radius: 50px;
+            font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s ease; cursor: pointer; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; box-shadow: 0 10px 30px rgba(108,99,255,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(108,99,255,0.35); }
+        .btn-secondary {
+            background: var(--glass); color: var(--text);
+            border: 1px solid var(--border); backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover { background: var(--bg-card); transform: translateY(-3px); }
+        .btn .arrow { transition: transform 0.3s ease; }
+        .btn:hover .arrow { transform: translateX(4px); }
+
+        .hero-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-          }
-          .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
-          .metric {
-            background: var(--surface-2);
+            padding: 32px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+        .hero-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .hero-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .metric {
             padding: 16px;
+            background: rgba(108,99,255,0.05);
+            border: 1px solid rgba(108,99,255,0.1);
             border-radius: 14px;
-          }
-          .metric strong { display: block; font-size: 1.1rem; color: var(--accent); }
-          section { padding: 26px 0 64px; }
-          .section-title {
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-          }
-          .section-heading { font-size: 1.8rem; margin-top: 0; margin-bottom: 24px; }
-          
-          .service-category {
-            margin-bottom: 40px;
-            padding: 24px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(31, 78, 216, 0.05), rgba(37, 99, 235, 0.03));
-            border: 1px solid rgba(31, 78, 216, 0.1);
-          }
-          .service-category h3 {
-            color: var(--text);
-            margin-top: 0;
+            transition: all 0.3s ease;
+        }
+        .metric:hover { background: rgba(108,99,255,0.1); transform: translateY(-2px); }
+        .metric strong { display: block; font-size: 1rem; color: var(--primary-light); margin-bottom: 4px; }
+        .metric span { font-size: 0.8rem; color: var(--text-muted); }
+
+        section { padding: 100px 0; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-label {
+            display: inline-block; padding: 6px 14px;
+            background: rgba(108,99,255,0.1);
+            border: 1px solid rgba(108,99,255,0.2);
+            border-radius: 50px;
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--primary-light);
+            text-transform: uppercase; letter-spacing: 1px;
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.3rem;
-          }
-          
-          .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 20px; }
-          .card {
-            background: var(--surface);
+        }
+        .section-title {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 800; letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+        .section-subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+
+        .service-category {
+            margin-bottom: 40px;
+            padding: 40px;
+            border-radius: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .service-category:hover { border-color: rgba(108,99,255,0.2); }
+        .service-category h3 {
+            font-size: 1.4rem; font-weight: 700;
+            margin-bottom: 24px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             border-radius: 18px;
-            padding: 22px;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-          }
-          .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 24px 60px rgba(31, 78, 216, 0.12);
-          }
-          .card-icon-wrap {
-            width: 62px;
-            height: 62px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            margin-bottom: 18px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(226, 239, 255, 0.9));
-            border: 1px solid rgba(31, 78, 216, 0.12);
-            box-shadow: 0 12px 28px rgba(31, 78, 216, 0.08);
-          }
-          .card-icon {
-            width: 30px;
-            height: 30px;
-            color: var(--accent);
-          }
-          .card h3 { margin-top: 0; margin-bottom: 8px; }
-          .card p { color: var(--muted); margin: 0; }
-          .cta {
-            text-align: center;
-            padding: 32px;
-            border-radius: 24px;
-            background: linear-gradient(90deg, rgba(31,78,216,0.08), rgba(37,99,235,0.03));
-            border: 1px solid rgba(31,78,216,0.12);
-          }
-          .chat-launcher {
-            position: fixed;
-            right: 28px;
-            bottom: 28px;
-            width: 62px;
-            height: 62px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, #1f4ed8, #2563eb);
-            color: #fff;
-            border: none;
-            box-shadow: 0 22px 40px rgba(31,78,216,0.2);
+            padding: 24px;
+            transition: all 0.4s ease;
             cursor: pointer;
-            z-index: 20;
-          }
-          .chat-launcher:hover { transform: translateY(-2px); }
-          .chat-panel {
-            position: fixed;
-            right: 24px;
-            bottom: 104px;
-            width: 360px;
-            max-width: calc(100% - 32px);
-            background: #ffffff;
+            display: block;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border-color: rgba(108,99,255,0.3);
+        }
+        .card-icon-wrap {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,210,255,0.1));
+        }
+        .card-icon { width: 28px; height: 28px; color: var(--primary-light); }
+        .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+        .about-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 24px;
-            box-shadow: 0 30px 80px rgba(20, 33, 61, 0.16);
+            padding: 48px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .about-section p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; }
+
+        .cta-section {
+            text-align: center;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(108,99,255,0.08), rgba(0,210,255,0.05));
+            border: 1px solid rgba(108,99,255,0.15);
+            border-radius: 32px;
+            position: relative;
             overflow: hidden;
-            display: none;
-            z-index: 20;
-          }
-          .chat-panel.active { display: block; }
-          .chat-header {
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(108,99,255,0.05) 0%, transparent 50%);
+            animation: ctaGlow 8s ease-in-out infinite;
+        }
+        @keyframes ctaGlow { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(5%, 5%); } }
+        .cta-section h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; position: relative; }
+        .cta-section p { color: var(--text-muted); margin-bottom: 28px; position: relative; }
+        .cta-section .btn { position: relative; }
+
+        .chat-launcher {
+            position: fixed; right: 28px; bottom: 28px;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff; border: none;
+            box-shadow: 0 10px 30px rgba(108,99,255,0.3);
+            cursor: pointer; z-index: 20;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .chat-launcher:hover { transform: scale(1.1); box-shadow: 0 15px 40px rgba(108,99,255,0.4); }
+        .chat-panel {
+            position: fixed; right: 24px; bottom: 100px;
+            width: 380px; max-width: calc(100% - 32px);
+            background: rgba(20,20,40,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            overflow: hidden; display: none; z-index: 20;
+        }
+        .chat-panel.active { display: block; animation: fadeInUp 0.3s ease; }
+        .chat-header {
             padding: 16px 20px;
-            background: linear-gradient(90deg, #1f4ed8, #2563eb);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-          .chat-header h4 { margin: 0; font-size: 1rem; }
-          .chat-close {
-            width: 30px;
-            height: 30px;
-            display: grid;
-            place-items: center;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .chat-header h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+        .chat-close {
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
             border-radius: 50%;
             background: rgba(255,255,255,0.2);
-            cursor: pointer;
-            font-weight: 700;
-          }
-          .chat-messages {
-            max-height: 340px;
-            overflow-y: auto;
+            cursor: pointer; font-weight: 700; font-size: 1.1rem;
+            transition: background 0.3s ease;
+        }
+        .chat-close:hover { background: rgba(255,255,255,0.3); }
+        .chat-messages {
+            max-height: 340px; overflow-y: auto;
             padding: 18px 20px;
-            background: #f7fbff;
-          }
-          .chat-message { margin-bottom: 14px; display: flex; }
-          .chat-message.user { justify-content: flex-end; }
-          .chat-message.bot { justify-content: flex-start; }
-          .bubble {
-            display: inline-block;
-            padding: 12px 16px;
-            border-radius: 18px;
-            max-width: 100%;
-            line-height: 1.5;
-            font-size: 0.95rem;
-          }
-          .chat-message.user .bubble { background: rgba(37,99,235,0.14); color: #102a43; }
-          .chat-message.bot .bubble { background: #eef5ff; color: #14213d; }
-          .chat-input {
-            display: flex;
-            gap: 12px;
-            border-top: 1px solid #e2e8f0;
+            background: rgba(0,0,0,0.2);
+        }
+        .chat-message { margin-bottom: 14px; display: flex; }
+        .chat-message.user { justify-content: flex-end; }
+        .chat-message.bot { justify-content: flex-start; }
+        .bubble {
+            display: inline-block; padding: 12px 16px;
+            border-radius: 18px; max-width: 85%;
+            line-height: 1.5; font-size: 0.9rem;
+        }
+        .chat-message.user .bubble {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-bottom-right-radius: 4px;
+        }
+        .chat-message.bot .bubble {
+            background: rgba(255,255,255,0.08);
+            color: var(--text); border-bottom-left-radius: 4px;
+        }
+        .chat-input {
+            display: flex; gap: 10px;
+            border-top: 1px solid var(--border);
             padding: 14px 16px;
-            background: #ffffff;
-          }
-          .chat-input input {
+            background: rgba(0,0,0,0.3);
+        }
+        .chat-input input {
             flex: 1;
-            border: 1px solid #cbd5e1;
-            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 12px 14px;
-            font-size: 0.95rem;
-          }
-          .chat-input button {
-            border: none;
-            border-radius: 16px;
-            padding: 12px 16px;
-            background: #1f4ed8;
-            color: #fff;
-            cursor: pointer;
-          }
-          @media (max-width: 860px) {
-            .hero, .feature-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
+            font-size: 0.9rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .chat-input input:focus { border-color: var(--primary); }
+        .chat-input input::placeholder { color: var(--text-muted); }
+        .chat-input button {
+            border: none; border-radius: 12px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff; cursor: pointer;
+            font-weight: 600; font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .chat-input button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108,99,255,0.3); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        [data-aos] { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+        [data-aos].aos-animate { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 860px) {
+            .hero { grid-template-columns: 1fr; gap: 40px; padding: 100px 0 40px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .nav-links {
+                display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(10,10,26,0.98);
+                flex-direction: column; justify-content: center; align-items: center;
+                gap: 24px; z-index: 999;
+            }
+            .nav-links.active { display: flex; }
+            .mobile-toggle { display: flex; z-index: 1000; }
+            .mobile-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+            .mobile-toggle.active span:nth-child(2) { opacity: 0; }
+            .mobile-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
             .chat-panel { right: 16px; left: 16px; bottom: 90px; width: auto; }
-          }
-        </style>
-      </head>
-      <body>
-        <header>
-          <div class="container nav">
+            .service-category { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <header id="header">
+        <div class="container nav">
             <a class="brand" href="/">Seed<span>Studio</span></a>
-            <nav class="nav-links">
-              <a href="#services">Services</a>
-              <a href="#about">About</a>
-              <a href="#contact">Contact</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#services">Services</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <a class="nav-cta" href="mailto:hello@seedstudio.example">Get Started</a>
             </nav>
-          </div>
-        </header>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
 
-        <main class="container">
-          <section class="hero">
-            <div>
-              <div class="eyebrow">AI business solutions</div>
-              <h1>Intelligent AI solutions for education and industries.</h1>
-              <p>We build AI-powered platforms for schools, colleges, healthcare, manufacturing, and agriculture to simplify learning, improve operations, and accelerate smarter decisions.</p>
-              <div class="hero-actions">
-                <a class="btn btn-primary" href="#contact">Book a consultation</a>
-                <a class="btn btn-secondary" href="#services">Explore solutions</a>
-              </div>
+    <main>
+        <div class="container">
+            <section class="hero">
+                <div>
+                    <div class="hero-badge">
+                        <span class="dot"></span>
+                        AI Business Solutions
+                    </div>
+                    <h1>Intelligent <span class="gradient-text">AI solutions</span> for education and industries.</h1>
+                    <p>We build AI-powered platforms for schools, colleges, healthcare, manufacturing, and agriculture to simplify learning, improve operations, and accelerate smarter decisions.</p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#contact">
+                            Book a Consultation
+                            <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
+                        <a class="btn btn-secondary" href="#services">Explore Solutions</a>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <h3>What We Enable</h3>
+                    <p>Personalized learning support, progress tracking, and industry-ready automation built around real business needs.</p>
+                    <div class="metric-grid">
+                        <div class="metric"><strong>Learning AI</strong><span>For students and teachers</span></div>
+                        <div class="metric"><strong>Industry AI</strong><span>Healthcare, mechanical, agriculture</span></div>
+                        <div class="metric"><strong>Progress Insights</strong><span>Student growth and evaluation</span></div>
+                        <div class="metric"><strong>Automation</strong><span>Smarter operations and workflows</span></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section id="services">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-label">Solutions</div>
+                    <h2 class="section-title">Our AI Service Offerings</h2>
+                    <p class="section-subtitle">Cutting-edge AI solutions tailored for every sector.</p>
+                </div>
+
+                <div class="service-category" data-aos="fade-up">
+                    <h3>🎓 Education AI</h3>
+                    <div class="feature-grid">
+                        <a class="card" href="/education-ai/student-learning">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2C7 2 3.25 5.75 3.25 10.75c0 5.5 4.75 9 8.75 11.25 4-2.25 8.75-5.75 8.75-11.25C20.75 5.75 17 2 12 2z"/>
+                                    <circle cx="12" cy="10.75" r="4.75"/>
+                                </svg>
+                            </div>
+                            <h3>Student Learning Agent</h3>
+                            <p>Personalized AI tutoring that adapts to each student's learning pace and style.</p>
+                        </a>
+                        <a class="card" href="/education-ai/teacher-dashboard">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                                </svg>
+                            </div>
+                            <h3>Teacher Dashboard</h3>
+                            <p>Real-time classroom analytics and student engagement tracking tools.</p>
+                        </a>
+                        <a class="card" href="/education-ai/parent-portal">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <h3>Parent Portal</h3>
+                            <p>Clear dashboards showing student progress and learning recommendations.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="service-category" data-aos="fade-up">
+                    <h3>🏭 Industry AI</h3>
+                    <div class="feature-grid">
+                        <a class="card" href="/industry-ai/healthcare">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                                </svg>
+                            </div>
+                            <h3>Healthcare AI</h3>
+                            <p>AI solutions for diagnostic support and hospital workflow optimization.</p>
+                        </a>
+                        <a class="card" href="/industry-ai/mechanical">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                            </div>
+                            <h3>Mechanical AI</h3>
+                            <p>Equipment monitoring and predictive maintenance for industrial operations.</p>
+                        </a>
+                        <a class="card" href="/industry-ai/automation">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </div>
+                            <h3>Industrial Automation</h3>
+                            <p>Automate repetitive processes and improve operational efficiency.</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="service-category" data-aos="fade-up">
+                    <h3>🌾 Agricultural AI</h3>
+                    <div class="feature-grid">
+                        <a class="card" href="/agricultural-ai/crop-monitoring">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2C7.5 2 4 5.5 4 10c0 5.25 6 10 8 10s8-4.75 8-10c0-4.5-3.5-8-8-8z"/>
+                                    <circle cx="12" cy="10" r="2.5"/>
+                                </svg>
+                            </div>
+                            <h3>Crop Monitoring</h3>
+                            <p>Real-time field monitoring and early issue detection using AI.</p>
+                        </a>
+                        <a class="card" href="/agricultural-ai/precision-farming">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2l5 9h-3l2 7-4-3-4 3 2-7H7l5-9z"/>
+                                </svg>
+                            </div>
+                            <h3>Precision Farming</h3>
+                            <p>AI-optimized irrigation, fertilization, and resource management.</p>
+                        </a>
+                        <a class="card" href="/agricultural-ai/weather-intelligence">
+                            <div class="card-icon-wrap">
+                                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                                </svg>
+                            </div>
+                            <h3>Weather Intelligence</h3>
+                            <p>Predictive weather analytics and farm planning recommendations.</p>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="hero-card">
-              <h3>What we enable</h3>
-              <p>Personalized learning support, progress tracking, and industry-ready automation built around real business needs.</p>
-              <div class="metric-grid">
-                <div class="metric"><strong>Learning AI</strong><span>For students and teachers</span></div>
-                <div class="metric"><strong>Industry AI</strong><span>Healthcare, mechanical, agriculture</span></div>
-                <div class="metric"><strong>Progress Insights</strong><span>Student growth and evaluation</span></div>
-                <div class="metric"><strong>Automation</strong><span>Smarter operations and workflows</span></div>
-              </div>
+        </section>
+
+        <section id="about">
+            <div class="container">
+                <div class="section-header" data-aos="fade-up">
+                    <div class="section-label">About</div>
+                    <h2 class="section-title">Why Choose Our AI Solutions</h2>
+                </div>
+                <div class="about-section" data-aos="fade-up">
+                    <p>We create practical AI business solutions that help organizations modernize learning, improve efficiency, and unlock smarter operations across education and industry. Our platforms are designed with real-world needs in mind, combining cutting-edge technology with intuitive interfaces.</p>
+                </div>
             </div>
-          </section>
+        </section>
 
-          <section id="services">
-            <div class="section-title">Solutions</div>
-            <h2 class="section-heading">Our AI Service Offerings</h2>
-            
-            <div class="service-category" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.05)) url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22><defs><pattern id=%22dots%22 x=%2240%22 y=%2240%22 width=%2240%22 height=%2240%22 patternUnits=%22userSpaceOnUse%22><circle cx=%2220%22 cy=%2220%22 r=%222%22 fill=%22rgba(59,130,246,0.1)%22/></pattern></defs><rect width=%22400%22 height=%22200%22 fill=%22url(%23dots)%22/></svg>') no-repeat right; background-size: auto, 300px 200px;">
-              <h3>🎓 Education AI</h3>
-              <div class="feature-grid">
-                <a class="card" href="/education-ai/student-learning" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 3.25 5.75 3.25 10.75c0 5.5 4.75 9 8.75 11.25 4-2.25 8.75-5.75 8.75-11.25C20.75 5.75 17 2 12 2zm0 15.5c-2.6 0-4.75-2.1-4.75-4.75S9.4 8 12 8s4.75 2.1 4.75 4.75S14.6 17.5 12 17.5z"/></svg></div>
-                  <h3>Student Learning Agent</h3>
-                  <p>Personalized AI tutoring that adapts to each student's learning pace and style.</p>
-                </a>
-                <a class="card" href="/education-ai/teacher-dashboard" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M5 4h14a1 1 0 0 1 1 1v13.5a.5.5 0 0 1-.5.5H5.5a.5.5 0 0 1-.5-.5V5a1 1 0 0 1 1-1zm2 4h10v2H7V8zm0 4h6v2H7v-2zm0 4h10v1.5H7V16z"/></svg></div>
-                  <h3>Teacher Dashboard</h3>
-                  <p>Real-time classroom analytics and student engagement tracking tools.</p>
-                </a>
-                <a class="card" href="/education-ai/parent-portal" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z"/></svg></div>
-                  <h3>Parent Portal</h3>
-                  <p>Clear dashboards showing student progress and learning recommendations.</p>
-                </a>
-              </div>
+        <section id="contact">
+            <div class="container">
+                <div class="cta-section" data-aos="fade-up">
+                    <h2>Ready to Transform Your Business with AI?</h2>
+                    <p>Let's build intelligent solutions tailored to your goals.</p>
+                    <a class="btn btn-primary" href="mailto:hello@seedstudio.example">
+                        Contact Us
+                        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
             </div>
+        </section>
+    </main>
 
-            <div class="service-category" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(139, 92, 246, 0.05)) url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22><defs><pattern id=%22grid%22 x=%2240%22 y=%2240%22 width=%2240%22 height=%2240%22 patternUnits=%22userSpaceOnUse%22><rect x=%221%22 y=%221%22 width=%2238%22 height=%2238%22 fill=%22none%22 stroke=%22rgba(168,85,247,0.1)%22 stroke-width=%220.5%22/></pattern></defs><rect width=%22400%22 height=%22200%22 fill=%22url(%23grid)%22/></svg>') no-repeat right; background-size: auto, 300px 200px;">
-              <h3>🏭 Industry AI</h3>
-              <div class="feature-grid">
-                <a class="card" href="/industry-ai/healthcare" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9 9 0 1 0 9 9 9 9 0 0 0-9-9zm1 12h-2v-2H8v-2h3V8h2v2h3v2h-3v2z"/></svg></div>
-                  <h3>Healthcare AI</h3>
-                  <p>AI solutions for diagnostic support and hospital workflow optimization.</p>
-                </a>
-                <a class="card" href="/industry-ai/mechanical" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3z"/><path d="M18.4 13.6l1.2-1.2-1.3-2.3-2.1.4a6.2 6.2 0 0 0-1.1-1.1l.4-2.1-2.3-1.3-1.2 1.2a6.2 6.2 0 0 0-2.4 0L8.5 6.6 6.2 7.9l.4 2.1a6.2 6.2 0 0 0-1.1 1.1l-2.1-.4-1.3 2.3 1.2 1.2a6.2 6.2 0 0 0 0 2.4L2.9 16l1.3 2.3 2.1-.4a6.2 6.2 0 0 0 1.1 1.1l-.4 2.1 2.3 1.3 1.2-1.2a6.2 6.2 0 0 0 2.4 0l1.2 1.2 2.3-1.3-.4-2.1a6.2 6.2 0 0 0 1.1-1.1l2.1.4 1.3-2.3-1.2-1.2a6.2 6.2 0 0 0 0-2.4z" opacity=".4"/></svg></div>
-                  <h3>Mechanical AI</h3>
-                  <p>Equipment monitoring and predictive maintenance for industrial operations.</p>
-                </a>
-                <a class="card" href="/industry-ai/automation" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h16v14H4z" opacity=".2"/><path d="M20 4H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-1 13H5V6h14v11zm-2-8h-4V7h4zm-6 0H8V7h4zm6 4h-4v-2h4zm-6 0H8v-2h4z"/></svg></div>
-                  <h3>Industrial Automation</h3>
-                  <p>Automate repetitive processes and improve operational efficiency.</p>
-                </a>
-              </div>
-            </div>
-
-            <div class="service-category" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(16, 185, 129, 0.05)) url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22><defs><pattern id=%22leaves%22 x=%2260%22 y=%2260%22 width=%2260%22 height=%2260%22 patternUnits=%22userSpaceOnUse%22><path d=%22M30 10 Q40 30 30 50 Q20 30 30 10%22 fill=%22rgba(34,197,94,0.08)%22/></pattern></defs><rect width=%22400%22 height=%22200%22 fill=%22url(%23leaves)%22/></svg>') no-repeat right; background-size: auto, 300px 200px;">
-              <h3>🌾 Agricultural AI</h3>
-              <div class="feature-grid">
-                <a class="card" href="/agricultural-ai/crop-monitoring" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7.5 2 4 5.5 4 10c0 5.25 6 10 8 10s8-4.75 8-10c0-4.5-3.5-8-8-8zm0 8.5A2.5 2.5 0 1 1 14.5 8 2.5 2.5 0 0 1 12 10.5z"/></svg></div>
-                  <h3>Crop Monitoring</h3>
-                  <p>Real-time field monitoring and early issue detection using AI.</p>
-                </a>
-                <a class="card" href="/agricultural-ai/precision-farming" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l5 9h-3l2 7-4-3-4 3 2-7H7l5-9zm0 2.2L9.6 9h4.8L12 4.2z"/></svg></div>
-                  <h3>Precision Farming</h3>
-                  <p>AI-optimized irrigation, fertilization, and resource management.</p>
-                </a>
-                <a class="card" href="/agricultural-ai/weather-intelligence" style="cursor: pointer;">
-                  <div class="card-icon-wrap"><svg class="card-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 10.5a4.5 4.5 0 0 0-8.9-1.4A3.5 3.5 0 0 0 6 13.5h12a3.5 3.5 0 0 0 .5-3z" opacity=".4"/><path d="M16 18h-1.5l1.5-1.5 1.5 1.5H16zm-8 0H6.5l1.5-1.5 1.5 1.5H8z"/></svg></div>
-                  <h3>Weather Intelligence</h3>
-                  <p>Predictive weather analytics and farm planning recommendations.</p>
-                </a>
-              </div>
-            </div>          </section>
-
-          <section id="about">
-            <div class="section-title">About</div>
-            <h2 class="section-heading">Why Choose Our AI Solutions</h2>
-            <p>We create practical AI business solutions that help organizations modernize learning, improve efficiency, and unlock smarter operations across education and industry. Our platforms are designed with real-world needs in mind, combining cutting-edge technology with intuitive interfaces.</p>
-          </section>
-
-          <section id="contact" class="cta">
-            <h2>Ready to transform your business with AI?</h2>
-            <p>Let’s build intelligent solutions tailored to your goals.</p>
-            <a class="btn btn-primary" href="mailto:hello@seedstudio.example">Contact us</a>
-          </section>
-        </main>
-        <button class="chat-launcher" id="chatLauncher" aria-label="Open AI chat">🤖</button>
-        <div class="chat-panel" id="chatPanel">
-          <div class="chat-header">
+    <button class="chat-launcher" id="chatLauncher" aria-label="Open AI chat">🤖</button>
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
             <h4>SeedStudio AI Assistant</h4>
             <div class="chat-close" id="chatClose">×</div>
-          </div>
-          <div class="chat-messages" id="chatMessages">
+        </div>
+        <div class="chat-messages" id="chatMessages">
             <div class="chat-message bot"><div class="bubble">Hello! Ask me about our AI services, products, or how SeedStudio can help your business.</div></div>
-          </div>
-          <div class="chat-input">
+        </div>
+        <div class="chat-input">
             <input id="chatInput" type="text" placeholder="Type a message..." />
             <button id="chatSend" type="button">Send</button>
-          </div>
         </div>
-        <script>
-          const chatLauncher = document.getElementById('chatLauncher');
-          const chatPanel = document.getElementById('chatPanel');
-          const chatClose = document.getElementById('chatClose');
-          const chatMessages = document.getElementById('chatMessages');
-          const chatInput = document.getElementById('chatInput');
-          const chatSend = document.getElementById('chatSend');
+    </div>
 
-          function addMessage(role, text) {
+    <script>
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        mobileToggle.addEventListener('click', () => {
+            mobileToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('aos-animate');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+
+        const chatLauncher = document.getElementById('chatLauncher');
+        const chatPanel = document.getElementById('chatPanel');
+        const chatClose = document.getElementById('chatClose');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSend = document.getElementById('chatSend');
+
+        function addMessage(role, text) {
             const message = document.createElement('div');
             message.className = 'chat-message ' + role;
             const bubble = document.createElement('div');
@@ -638,61 +1367,60 @@ async def frontend_index():
             message.appendChild(bubble);
             chatMessages.appendChild(message);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-          }
+        }
 
-          function respondToMessage(text) {
+        function respondToMessage(text) {
             const normalized = text.toLowerCase();
             if (/hello|hi|hey/.test(normalized)) {
-              return 'Hi there! I’m the SeedStudio assistant. Ask me about our AI solutions for education, industry, or agriculture.';
+                return 'Hi there! I'm the SeedStudio assistant. Ask me about our AI solutions for education, industry, or agriculture.';
             }
             if (/education|student|teacher|parent/.test(normalized)) {
-              return 'Our Education AI includes tutoring, teacher dashboards, and parent portals. Which area would you like to explore?';
+                return 'Our Education AI includes tutoring, teacher dashboards, and parent portals. Which area would you like to explore?';
             }
             if (/healthcare|medical|hospital/.test(normalized)) {
-              return 'Our Healthcare AI supports diagnostics, workflow automation, and patient engagement for smarter care.';
+                return 'Our Healthcare AI supports diagnostics, workflow automation, and patient engagement for smarter care.';
             }
             if (/farm|crop|agriculture|weather/.test(normalized)) {
-              return 'Our Agriculture AI offers crop monitoring, precision farming, and weather intelligence to improve yields.';
+                return 'Our Agriculture AI offers crop monitoring, precision farming, and weather intelligence to improve yields.';
             }
             if (/automation|industry|mechanical/.test(normalized)) {
-              return 'We provide Industry AI for equipment maintenance, production automation, and operational analytics.';
+                return 'We provide Industry AI for equipment maintenance, production automation, and operational analytics.';
             }
             return 'Great question! We can help you build AI solutions for your business. Tell me more about your goals or ask for a specific service.';
-          }
+        }
 
-          chatLauncher.addEventListener('click', () => {
+        chatLauncher.addEventListener('click', () => {
             chatPanel.classList.toggle('active');
-          });
+        });
 
-          chatClose.addEventListener('click', () => {
+        chatClose.addEventListener('click', () => {
             chatPanel.classList.remove('active');
-          });
+        });
 
-          chatSend.addEventListener('click', () => {
+        chatSend.addEventListener('click', () => {
             const text = chatInput.value.trim();
             if (!text) return;
             addMessage('user', text);
             chatInput.value = '';
             setTimeout(() => addMessage('bot', respondToMessage(text)), 500);
-          });
+        });
 
-          chatInput.addEventListener('keydown', (event) => {
+        chatInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-              event.preventDefault();
-              chatSend.click();
+                event.preventDefault();
+                chatSend.click();
             }
-          });
-        </script>
-      </body>
-    </html>
-    """
+        });
+    </script>
+</body>
+</html>"""
 
 
 @router.get("/education-ai/student-learning", response_class=HTMLResponse)
 async def education_student_learning():
     return render_service_page(
         title="Student Learning Agent",
-        hero_title="Personalized AI tutoring for every student.",
+        hero_title="Personalized <span class='gradient-text'>AI tutoring</span> for every student.",
         intro="Our adaptive learning AI tutors students individually, adjusting difficulty based on performance and providing step-by-step guidance through complex concepts.",
         features=[
             ("Adaptive Learning", "Content difficulty adjusts based on student performance in real-time."),
@@ -722,7 +1450,7 @@ async def education_student_learning():
 async def education_teacher_dashboard():
     return render_service_page(
         title="Teacher Dashboard",
-        hero_title="Classroom management powered by AI insights.",
+        hero_title="Classroom management <span class='gradient-text'>powered by AI</span> insights.",
         intro="Monitor student engagement, track individual progress, and get actionable recommendations to improve teaching effectiveness.",
         features=[
             ("Real-Time Analytics", "Live view of student engagement and performance metrics."),
@@ -752,7 +1480,7 @@ async def education_teacher_dashboard():
 async def education_parent_portal():
     return render_service_page(
         title="Parent Portal",
-        hero_title="Stay connected to your child's learning journey.",
+        hero_title="Stay connected to your <span class='gradient-text'>child's learning</span> journey.",
         intro="Get clear updates on your child's progress, strengths, and areas for improvement with actionable recommendations for home support.",
         features=[
             ("Progress Reports", "Weekly and monthly summaries of learning achievements."),
@@ -782,7 +1510,7 @@ async def education_parent_portal():
 async def industry_healthcare():
     return render_service_page(
         title="Healthcare AI",
-        hero_title="Smarter healthcare operations with AI support.",
+        hero_title="Smarter healthcare <span class='gradient-text'>operations with AI</span> support.",
         intro="Improve diagnostics, optimize workflows, and reduce administrative burden with AI-powered healthcare solutions.",
         features=[
             ("Diagnostic Support", "AI assists in analyzing medical images and patient data."),
@@ -812,7 +1540,7 @@ async def industry_healthcare():
 async def industry_mechanical():
     return render_service_page(
         title="Mechanical AI",
-        hero_title="Predictive maintenance and equipment intelligence.",
+        hero_title="Predictive maintenance and <span class='gradient-text'>equipment intelligence</span>.",
         intro="Monitor equipment health, predict failures before they happen, and reduce downtime with AI-powered mechanical systems.",
         features=[
             ("Equipment Monitoring", "Real-time sensor data analysis for equipment health."),
@@ -842,7 +1570,7 @@ async def industry_mechanical():
 async def industry_automation():
     return render_service_page(
         title="Industrial Automation",
-        hero_title="Automate repetitive tasks and boost productivity.",
+        hero_title="Automate repetitive tasks and <span class='gradient-text'>boost productivity</span>.",
         intro="Reduce manual work, minimize errors, and improve throughput with intelligent industrial automation solutions.",
         features=[
             ("Process Automation", "Automate repetitive workflows and manual tasks."),
@@ -872,7 +1600,7 @@ async def industry_automation():
 async def agricultural_crop_monitoring():
     return render_service_page(
         title="Crop Monitoring",
-        hero_title="Real-time field health monitoring with AI.",
+        hero_title="Real-time field health <span class='gradient-text'>monitoring with AI</span>.",
         intro="Use satellite and sensor data to monitor crop health, detect issues early, and take action before problems spread.",
         features=[
             ("Satellite Imaging", "High-resolution field monitoring using satellite data."),
@@ -902,7 +1630,7 @@ async def agricultural_crop_monitoring():
 async def agricultural_precision_farming():
     return render_service_page(
         title="Precision Farming",
-        hero_title="Optimize every resource for maximum yield.",
+        hero_title="Optimize every resource for <span class='gradient-text'>maximum yield</span>.",
         intro="Use AI-driven insights to optimize irrigation, fertilization, and resource allocation for better harvests and lower costs.",
         features=[
             ("Irrigation Optimization", "AI determines ideal watering schedules and amounts."),
@@ -932,7 +1660,7 @@ async def agricultural_precision_farming():
 async def agricultural_weather_intelligence():
     return render_service_page(
         title="Weather Intelligence",
-        hero_title="Make better farm decisions with AI weather insights.",
+        hero_title="Make better farm decisions with <span class='gradient-text'>AI weather insights</span>.",
         intro="Access AI-powered weather forecasting and recommendations tailored to your farm for smarter planning and reduced risk.",
         features=[
             ("Predictive Forecasting", "Hyper-local weather predictions for your farm."),
